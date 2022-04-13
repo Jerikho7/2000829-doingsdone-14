@@ -82,7 +82,7 @@ $tasks = [
                     <ul class="main-navigation__list">
                         <?php foreach ($projects as $project): ?>
                         <li class="main-navigation__list-item">
-                            <a class="main-navigation__list-item-link" href="#"><?= $projects; ?></a>
+                            <a class="main-navigation__list-item-link" href="#"><?= $project; ?></a>
                             <span class="main-navigation__list-item-count">0</span>
                         </li>
                         <?php endforeach; ?>
