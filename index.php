@@ -53,7 +53,7 @@ function count_task ($tasks, $project) {
         }
     }
     return $count;
-};
+}
 
 
 $page_content = include_template('main.php', [
@@ -69,4 +69,3 @@ $layout_content = include_template('layout.php', [
 ]);
 
 print($layout_content);
-?>
