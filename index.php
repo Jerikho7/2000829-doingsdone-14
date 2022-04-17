@@ -27,7 +27,7 @@ $tasks = [
     ],
     [
         'name' => 'Встреча с другом',
-        'date' => '22.12.2019',
+        'date' => '18.04.2022',
         'category' => 'Входящие',
         'done' => false,
     ],
@@ -54,6 +54,19 @@ function count_task ($tasks, $project) {
     }
     return $count;
 }
+date_default_timezone_set('Asia/Sakhalin');
+function task_deadline ($date) {
+    if ($date === null) {
+        return false;
+    } 
+        $cur_date = strtotime(date('d.m.Y'));
+        $date_task = strtotime($date);
+        $hours_count = floor($cur_date - $date_task / 3600);
+        if ($hours_count < 24) {
+        return true; 
+        } 
+    }
+        
 
 
 $page_content = include_template('main.php', [
