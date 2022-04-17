@@ -1,8 +1,10 @@
 <?php
 
+require_once('helpers.php'); 
+
 $show_complete_tasks = rand(0, 1);
 
-$projects = ["Входящие", "Учеба", "Работа", "Домашние дела", "Авто",];
+$projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
 
 $tasks = [
     [
@@ -53,22 +55,6 @@ function count_task ($tasks, $project) {
     return $count;
 };
 
-function include_template($name, array $data = []) {
-    $name = 'template/' . $name;
-    $result = '';
-
-    if (!is_readable($name)) {
-        return $result;
-    }
-
-    ob_start();
-    extract($data);
-    require $name;
-
-    $result = ob_get_clean();
-
-    return $result;
-}
 
 $page_content = include_template('main.php', [
     'show_complete_tasks' => $show_complete_tasks,
