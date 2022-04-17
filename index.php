@@ -59,13 +59,13 @@ function task_deadline ($date) {
     if ($date === null) {
         return false;
     } 
-        $cur_date = strtotime(date('d.m.Y'));
-        $date_task = strtotime($date);
-        $hours_count = floor($cur_date - $date_task / 3600);
-        if ($hours_count < 24) {
-        return true; 
-        } 
-    }
+    $cur_date = strtotime(date('d.m.Y'));
+    $date_task = strtotime($date);
+    $hours_count = floor(($cur_date - $date_task) / 3600);
+    if ($hours_count < 24) {
+    return true; 
+    } 
+}
         
 
 
