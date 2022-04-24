@@ -6,7 +6,7 @@ USE doingsdone;
 
 CREATE TABLE users (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  date_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   email VARCHAR(255) NOT NULL UNIQUE,
   name VARCHAR(255) NOT NULL,
   password CHAR(64) NOT NULL
@@ -21,11 +21,11 @@ CREATE TABLE projects (
 
 CREATE TABLE tasks (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    date_add TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status INT DEFAULT 0,
     name VARCHAR(255) NOT NULL,
     file VARCHAR(255),
-    date TIMESTAMP NOT NULL,
+    deadline_at TIMESTAMP NOT NULL,
     user_id INT,
     project_id INT,
     FOREIGN KEY (user_id) REFERENCES users (id),
@@ -34,3 +34,4 @@ CREATE TABLE tasks (
 
 CREATE INDEX u_email ON users (email);
 CREATE INDEX p_name ON projects (name);
+
