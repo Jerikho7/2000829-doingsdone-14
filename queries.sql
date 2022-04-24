@@ -21,10 +21,10 @@ INSERT INTO tasks (status, name, deadline_at, user_id, project_id) VALUES
 SELECT name FROM projects WHERE user_id = 1;
 
 -- получить список из всех задач для одного проекта;
-SELECT name FROM asks WHERE project_id = 5;
+SELECT name FROM tasks WHERE project_id = 5;
 
 -- пометить задачу как выполненную;
-UPDATE tasks SET status = '1' WHERE id = 5;
+UPDATE tasks SET status = 1 WHERE id = 5;
 
 -- обновить название задачи по её идентификатору.
 UPDATE tasks SET name = 'Встреча с другом, взять подарок' WHERE id = 4;
