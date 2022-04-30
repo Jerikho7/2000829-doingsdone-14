@@ -1,54 +1,35 @@
 <?php
 
-require_once('helpers.php'); 
+require_once('init.php');
+require_once('helpers.php');
+
 
 $show_complete_tasks = rand(0, 1);
 
-$projects = ['Входящие', 'Учеба', 'Работа', 'Домашние дела', 'Авто'];
+if (!$link) {
+    $error = mysqli_connect_error();
+    $page_content = include_template('error.php', ['error' => $error]);
+}
+else {
+    $sql_projects = 'SELECT `id`, `name` FROM projects WHERE user_id = 1';
+    $result = mysqli_query($link, $sql_projects);
+    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+    
+    $sql_tasks = 'SELECT status, t.name, deadline_at, p.name FROM tasks t JOIN projects p on t.project_id = p.id WHERE p.user_id = 1';
+    $res = mysqli_query($link, $sql_tasks);
+    $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+    $page_content = include_template('main.php', [
+        'projects' => $projects,
+        'tasks' => $tasks,
+        'show_complete_tasks' => $show_complete_tasks
+    ]);
+};
 
-$tasks = [
-    [
-        'name' => 'Собеседование в IT компании',
-        'date' => '01.12.2022',
-        'category' => 'Работа',
-        'done' => false,
-    ],
-    [
-        'name' => 'Выполнить тестовое задание',
-        'date' => '01.05.2022',
-        'category' => 'Работа',
-        'done' => false,
-    ],
-    [
-        'name' => 'Сделать адание первого раздела',
-        'date' => '04.04.2022',
-        'category' => 'Учеба',
-        'done' => true,
-    ],
-    [
-        'name' => 'Встреча с другом',
-        'date' => '18.05.2022',
-        'category' => 'Входящие',
-        'done' => false,
-    ],
-    [
-        'name' => 'Купить корм для кота',
-        'date' => null,
-        'category' => 'Домашние дела',
-        'done' => false,
-    ],
-    [
-        'name' => 'Заказать пиццу',
-        'date' => null,
-        'category' => 'Домашние дела',
-        'done' => false,
-    ],
-];
 
 function count_task ($tasks, $project) {
     $count = 0;
     foreach ($tasks as $task) {
-        if ($project === $task['category']) {
+        if ($project === $task['project_id']) {
             $count ++;
         }
     }
@@ -67,11 +48,7 @@ function task_deadline ($date) {
         
 
 
-$page_content = include_template('main.php', [
-    'show_complete_tasks' => $show_complete_tasks,
-    'projects' => $projects,
-    'tasks'=> $tasks
-]);
+
 
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
