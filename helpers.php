@@ -121,13 +121,14 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
 }
 
 //подключение к БД
-function conection ($db) {
+function db_connect ($db) {
     $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+        if (!$link) {
+            echo 'Ошибка соединения: ' . mysqli_connect_error() . '<br>';
+            echo 'Код ошибки: ' . mysqli_connect_errno();
+        }
+
     mysqli_set_charset($link, 'utf8');
-    if (!$link) {
-        $error = mysqli_connect_error();
-        $page_content = include_template('error.php', ['error' => $error]);
-    } 
     return $link;
 }
 

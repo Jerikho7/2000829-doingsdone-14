@@ -43,14 +43,14 @@
                 <table class="tasks">
                     <?php foreach ($tasks as $task): ?>
                     <?php if ($task['status'] and $show_complete_tasks === 0): continue; endif; ?>
-                    <tr class="tasks__item task <?php if ($task['status']): ?>task--completed<?php endif ?> <?php if (task_deadline($task['deadline'])): ?>task--important<?php endif ?>">
+                    <tr class="tasks__item task <?php if ($task['status']): ?>task--completed<?php endif ?> <?php if (task_deadline($task['deadline_at'])): ?>task--important<?php endif ?>">
                         <td class="task__select">
                             <label class="checkbox task__checkbox">
                                 <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?php if ($task['status']): ?>checked<?php endif; ?>>
                                 <span class="checkbox__text"><?= htmlspecialchars($task['name']); ?></span>
                             </label>
                         </td>
-                        <td class="task__date"><?= $task['deadline']; ?></td>
+                        <td class="task__date"><?= $task['deadline_at']; ?></td>
                         <td class="task__controls"><?= htmlspecialchars($task['category']); ?></td>
                     </tr>
                     <?php endforeach; ?>

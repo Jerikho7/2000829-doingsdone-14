@@ -1,23 +1,50 @@
 <?php
-
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 require_once('helpers.php');
-
 $db = require_once('db.php');
-$connect = conection ($db);
+
+$connect = db_connect($db);
 
 $projects = [];
 $tasks = [];
 $page_content = '';
 $show_complete_tasks = rand(0, 1);
+$user = 1;
 
-
-$sql_projects = 'SELECT id, name FROM projects WHERE user_id = 2';
-$result = mysqli_query($connect, $sql_projects);
-$projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$sql_projects = 'SELECT id, name FROM projects WHERE user_id = ?';
+$stmt = mysqli_prepare($connect, $sql_projects);
+mysqli_stmt_bind_param($stmt, 'i', $user);
+if ($stmt === false) {
+    $error = mysqli_connect_error();
+    $page_content = include_template('error.php', ['error' => $error]);
+}
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+if (!$result) {
+    $error = mysqli_connect_error();
+    $page_content = include_template('error.php', ['error' => $error]);
+}
+else {
+    $projects = mysqli_fetch_all($result, MYSQLI_ASSOC); 
+};
     
-$sql_tasks = 'SELECT status, t.name, UNIX_TIMESTAMP(deadline_at) as deadline, p.name as category FROM tasks t JOIN projects p on t.project_id = p.id WHERE p.user_id = 2';
-$res = mysqli_query($connect, $sql_tasks);
-$tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+$sql_tasks = 'SELECT status, t.name, deadline_at, p.name as category FROM tasks t JOIN projects p on t.project_id = p.id WHERE p.user_id = ?';
+$stmt = mysqli_prepare($connect, $sql_tasks);
+mysqli_stmt_bind_param($stmt, 'i', $user);
+if ($stmt === false) {
+    $error = mysqli_connect_error();
+    $page_content = include_template('error.php', ['error' => $error]);
+}
+mysqli_stmt_execute($stmt);
+$res = mysqli_stmt_get_result($stmt);
+if (!$res) {
+    $error = mysqli_connect_error();
+    $page_content = include_template('error.php', ['error' => $error]);
+}
+else {
+    $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+};
+
 $page_content = include_template('main.php', [
     'projects' => $projects,
     'tasks' => $tasks,
@@ -41,7 +68,7 @@ function task_deadline ($date) {
     } 
     $cur_date = strtotime(date('d-m-Y'));
     $date_task = strtotime($date);
-    $hours_count = floor(($cur_date - $date_task) / 3600);
+    $hours_count = abs(floor(($cur_date - $date_task) / 3600));
     return $hours_count < 24;
 }
         
@@ -49,7 +76,7 @@ function task_deadline ($date) {
 $layout_content = include_template('layout.php', [
     'content' => $page_content,
     'title' => 'Дела в порядке',
-    'user' => 'Jerikho'
+    'user' => 'Евгения'
 ]);
 
 print($layout_content);
