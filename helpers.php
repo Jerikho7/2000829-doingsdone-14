@@ -120,6 +120,17 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
     }
 }
 
+//подключение к БД
+function conection ($db) {
+    $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
+    mysqli_set_charset($link, 'utf8');
+    if (!$link) {
+        $error = mysqli_connect_error();
+        $page_content = include_template('error.php', ['error' => $error]);
+    } 
+    return $link;
+}
+
 /**
  * Подключает шаблон, передает туда данные и возвращает итоговый HTML контент
  * @param string $name Путь к файлу шаблона относительно папки templates
