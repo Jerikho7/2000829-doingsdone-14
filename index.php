@@ -14,13 +14,13 @@ $user = 1;
 
 $sql_projects = 'SELECT id, name FROM projects WHERE user_id = ?';
 $stmt = mysqli_prepare($connect, $sql_projects);
+if ($stmt === false) {
+	report_error(mysqli_error($connect));
+}
 if (!mysqli_stmt_bind_param($stmt, 'i', $user)) {
 	report_error(mysqli_error($connect));
 }
 if (!mysqli_stmt_execute($stmt)) {
-	report_error(mysqli_error($connect));
-}
-if ($stmt === false) {
 	report_error(mysqli_error($connect));
 }
 $result = mysqli_stmt_get_result($stmt);
