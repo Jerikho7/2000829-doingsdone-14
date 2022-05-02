@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Sakhalin');
 require_once('helpers.php');
 $db = require_once('db.php');
 
@@ -29,7 +30,8 @@ if (!$result) {
 } else {
 	$projects = mysqli_fetch_all($result, MYSQLI_ASSOC);
 };
-$sql_tasks = 'SELECT status, t.name, deadline_at, p.name as category FROM tasks t JOIN projects p on t.project_id = p.id WHERE p.user_id = ?';
+$project_id = filter_input(INPUT_GET, 'id');
+$sql_tasks = 'SELECT status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ? AND project_id =' . $project_id;
 $stmt = mysqli_prepare($connect, $sql_tasks);
 if ($stmt === false) {
 	report_error(mysqli_error($connect));
@@ -54,27 +56,10 @@ $page_content = include_template(
 		'show_complete_tasks' => $show_complete_tasks
 	]
 );
-function count_task($tasks, $project)
-{
-	$count = 0;
-	foreach ($tasks as $task) {
-		if ($project['name'] === $task['category']) {
-			$count++;
-		}
-	}
-	return $count;
-}
-date_default_timezone_set('Asia/Sakhalin');
-function task_deadline($date)
-{
-	if ($date === null) {
-		return false;
-	}
-	$cur_date = strtotime(date('d-m-Y'));
-	$date_task = strtotime($date);
-	$hours_count = abs(floor(($cur_date - $date_task) / 3600));
-	return $hours_count < 24;
-}
+
+
+
+
 $layout_content = include_template(
 	'layout.php',
 	[
