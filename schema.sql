@@ -25,7 +25,7 @@ CREATE TABLE tasks (
     status INT DEFAULT 0,
     name VARCHAR(255) NOT NULL,
     file VARCHAR(255),
-    deadline_at TIMESTAMP NOT NULL,
+    deadline_at DATE NULL,
     user_id INT,
     project_id INT,
     FOREIGN KEY (user_id) REFERENCES users (id),
