@@ -7,7 +7,7 @@
                         <?php foreach ($projects as $project): ?>
                         <li class="main-navigation__list-item<?php if ($project['id'] === $project_id): ?>main-navigation__list-item--active<?php endif; ?>">
                             <a class="main-navigation__list-item-link" href="index.php?id=<?= $project['id']; ?>"><?= htmlspecialchars($project['name']); ?></a>
-                            <span class="main-navigation__list-item-count"><?= count_task ($tasks, $project) ?></span>
+                            <span class="main-navigation__list-item-count"><?= $project['task_count']; ?></span>
                         </li>
                         <?php endforeach; ?>
                     </ul>
@@ -50,7 +50,7 @@
                                 <span class="checkbox__text"><?= htmlspecialchars($task['name']); ?></span>
                             </label>
                         </td>
-                        <td class="task__files"><?= ($task['file']); ?></td>
+                        <!-- <td class="task__file"><?= $task['file']; ?></td>-->
                         <td class="task__date"><?= $task['deadline_at']; ?></td>
                     </tr>
                     <?php endforeach; ?>

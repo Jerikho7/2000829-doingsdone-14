@@ -144,18 +144,18 @@ function report_error($error)
     exit;
 }
 //подключение ошибки 404
-
-//подсчет задач
-function count_task($tasks, $project)
+function report_error_404($error_404)
 {
-	$count = 0;
-	foreach ($tasks as $task) {
-		if ($project ['id'] === $task['project_id']) {
-			$count++;
-		}
-	}
-	return $count;
+    $page_content = include_template('error_404.php', ['error_404' => $error_404]);
+    
+    print include_template('layout.php', [
+        'content' => $page_content,
+        'title' => 'Дела в порядке',
+        'user' => 'Евгения'
+    ]);
+    exit;
 }
+
 //определение дедлайна
 function task_deadline($date)
 {
