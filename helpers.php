@@ -143,12 +143,14 @@ function report_error($error)
     ]);
     exit;
 }
+//подключение ошибки 404
+
 //подсчет задач
 function count_task($tasks, $project)
 {
 	$count = 0;
 	foreach ($tasks as $task) {
-		if ($project['id'] === $task['project_id']) {
+		if ($project ['id'] === $task['project_id']) {
 			$count++;
 		}
 	}

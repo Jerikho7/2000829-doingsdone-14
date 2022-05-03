@@ -50,7 +50,7 @@
                                 <span class="checkbox__text"><?= htmlspecialchars($task['name']); ?></span>
                             </label>
                         </td>
-                        <td class="task__controls"><?= ($task['file']); ?></td>
+                        <td class="task__files"><?= ($task['file']); ?></td>
                         <td class="task__date"><?= $task['deadline_at']; ?></td>
                     </tr>
                     <?php endforeach; ?>
