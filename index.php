@@ -13,7 +13,9 @@ $page_content = '';
 $show_complete_tasks = rand(0, 1);
 $user = 2;
 
-$sql_projects = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? GROUP BY p.name ORDER BY p.name asc';
+$sql_projects = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p '
+				. 'LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? '
+				. 'GROUP BY p.name ORDER BY p.name asc';
 $stmt = mysqli_prepare($connect, $sql_projects);
 if ($stmt === false) {
 	report_error(mysqli_error($connect));
@@ -33,7 +35,8 @@ if (!$result) {
 
 $project_id = filter_input(INPUT_GET, 'id');
 if ($project_id) {
-	$sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ? AND project_id = ?';
+	$sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks '
+				. 'WHERE user_id = ? AND project_id = ?';
 	$stmt = mysqli_prepare($connect, $sql_tasks);
 	if ($stmt === false) {
 		report_error(mysqli_error($connect));
