@@ -151,7 +151,7 @@ function report_error_404($error_404)
     print include_template('layout.php', [
         'content' => $page_content,
         'title' => 'Дела в порядке',
-        'user' => 'Евгения'
+        'user' => 'Евгения',
     ]);
     exit;
 }

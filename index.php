@@ -13,7 +13,7 @@ $page_content = '';
 $show_complete_tasks = rand(0, 1);
 $user = 1;
 
-$sql_projects = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? GROUP BY p.name';
+$sql_projects = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? GROUP BY p.name ORDER BY p.name asc';
 $stmt = mysqli_prepare($connect, $sql_projects);
 if ($stmt === false) {
 	report_error(mysqli_error($connect));
@@ -61,7 +61,7 @@ if (!$res) {
 	$tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
 } 
 if (count($tasks) === 0) {
-	report_error_404 ('в выбранной категории нет задач');
+	report_error_404('в выбранной категории нет задач');
 };
 $page_content = include_template(
 	'main.php',
