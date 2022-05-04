@@ -131,7 +131,7 @@ function db_connect ($db)
     mysqli_set_charset($link, 'utf8');
     return $link; 
 }
-
+//подключение ошибки
 function report_error($error)
 {
     $page_content = include_template('error.php', ['error' => $error]);
@@ -142,6 +142,30 @@ function report_error($error)
         'user' => 'Евгения'
     ]);
     exit;
+}
+//подключение ошибки 404
+function report_error_404($error_404)
+{
+    $page_content = include_template('error_404.php', ['error_404' => $error_404]);
+    
+    print include_template('layout.php', [
+        'content' => $page_content,
+        'title' => 'Дела в порядке',
+        'user' => 'Евгения',
+    ]);
+    exit;
+}
+
+//определение дедлайна
+function task_deadline($date)
+{
+	if ($date === null) {
+		return false;
+	}
+	$cur_date = strtotime(date('d-m-Y'));
+	$date_task = strtotime($date);
+	$hours_count = abs(floor(($cur_date - $date_task) / 3600));
+	return $hours_count < 24;
 }
 
 /**
