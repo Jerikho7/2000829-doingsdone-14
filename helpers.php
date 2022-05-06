@@ -16,8 +16,26 @@
 function is_date_valid(string $date) : bool {
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
-
+    if ($dateTimeObj < date('Y-m-d')){
+        return "Дата не должна быть позднее текущей";
+    } //нужно ли добаво=лять else?
     return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+}
+//проверка выбранного проекта на существование в категории
+function valid_projects($id, $allowed_list) {
+    if (!in_array($id, $allowed_list)) {
+        return "Проект не найден";
+    }
+}
+//проверка на заполенности строки имени задачи
+function valid_task_name($name) {
+    if (empty($_POST[$name])) {
+        return "Это поле должно быть заполнено";
+    }
+}
+
+function get_post_val($name) {
+    return filter_input(INPUT_POST, $name);
 }
 
 /**
