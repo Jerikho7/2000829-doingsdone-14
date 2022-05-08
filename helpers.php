@@ -13,13 +13,20 @@
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
-    $format_to_check = 'Y-m-d';
-    $dateTimeObj = date_create_from_format($format_to_check, $date);
-    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+function is_date_valid($date) {
+    if (is_null($date)) {
+        return null;
+    } else {
+       $format_to_check = 'Y-m-d';
+        $dateTimeObj = date_create_from_format($format_to_check, $date);
+        return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0; 
+    }   
 }
 function valid_date($date) {
-    if (!is_date_valid($date)) {
+    if (is_null($date)) {
+        return null;
+    }
+    if (is_date_valid($date) === false) {
         return "Это поле заполненно не корректно";
     }
     if ($date < date('Y-m-d')) {

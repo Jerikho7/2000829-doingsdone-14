@@ -6,8 +6,7 @@ if (!$connect) {
 	report_error(mysqli_connect_error());
 };
 $user = 2;
-
-$project_id = filter_input(INPUT_GET, 'project_id');
+$project_id = filter_input(INPUT_GET, 'id');
 $projects_ids = [];
 $projects = projects_db($connect, $user);
 $projects_ids = array_column($projects, 'id');
