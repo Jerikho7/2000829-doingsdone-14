@@ -5,7 +5,7 @@
             <nav class="main-navigation">
                     <ul class="main-navigation__list">
                         <?php foreach ($projects as $project): ?>
-                        <li class="main-navigation__list-item <?php if ($project['id'] == $project_id): ?>main-navigation__list-item--active<?php endif; ?>">
+                        <li class="main-navigation__list-item">
                             <a class="main-navigation__list-item-link" href="index.php?id=<?= $project['id']; ?>"><?= htmlspecialchars($project['name']); ?></a>
                             <span class="main-navigation__list-item-count"><?= $project['task_count']; ?></span>
                         </li>
@@ -43,7 +43,7 @@
           <div class="form__row">
             <label class="form__label" for="date">Дата выполнения</label>
             <?php $classname = isset($errors['deadline_at']) ? "form__input--error" : ""; ?>
-            <input class="form__input form__input--date <?= $classname; ?>" type="text" name="date" id="date" value="" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
+            <input class="form__input form__input--date <?= $classname; ?>" type="text" name="date" id="date" value="<?= get_post_val('deadline_at'); ?>" placeholder="Введите дату в формате ГГГГ-ММ-ДД">
             <?php if (isset($errors['deadline_at'])): ?><p class="form__message"><?= $errors['deadline_at']; ?></p><?php endif; ?>
           </div>
 
@@ -51,7 +51,7 @@
             <label class="form__label" for="file">Файл</label>
 
             <div class="form__input-file">
-              <input class="visually-hidden" type="file" name="file" id="file" value="">
+              <input class="visually-hidden" type="file" name="file" id="file" value="<?= get_post_val('file'); ?>">
 
               <label class="button button--transparent" for="file">
                 <span>Выберите файл</span>
