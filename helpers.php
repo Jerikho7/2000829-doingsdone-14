@@ -16,15 +16,14 @@
 function is_date_valid($date) {
     if (is_null($date)) {
         return null;
-    } else {
-       $format_to_check = 'Y-m-d';
-        $dateTimeObj = date_create_from_format($format_to_check, $date);
-        return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0; 
-    }   
+    }
+    $format_to_check = 'Y-m-d';
+    $dateTimeObj = date_create_from_format($format_to_check, $date);
+    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;   
 }
 function valid_date($date) {
     if (is_null($date)) {
-        return null;
+        return false;
     }
     if (is_date_valid($date) === false) {
         return "Это поле заполненно не корректно";
@@ -43,9 +42,9 @@ function valid_projects($id, $allowed_list) {
 }
 //проверка на заполенности строки имени задачи
 function valid_task_name($name) {
-    if (empty($_POST[$name])) {
+    if (empty($name)) {
         return "Это поле должно быть заполнено";
-    }
+    } 
     return null;
 }
 
@@ -171,19 +170,19 @@ function projects_db ($connect, $user) {
 				. 'GROUP BY p.name ORDER BY p.name asc';
     $stmt = mysqli_prepare($connect, $sql);
     if ($stmt === false) {
-	report_error(mysqli_error($connect));
+	    report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_bind_param($stmt, 'i', $user)) {
-	report_error(mysqli_error($connect));
+	    report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_execute($stmt)) {
-	report_error(mysqli_error($connect));
+	    report_error(mysqli_error($connect));
     }
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-	report_error(mysqli_error($connect));
+	    report_error(mysqli_error($connect));
     } else {
-	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+	    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 	};
 }
 //подключение ошибки

@@ -15,9 +15,9 @@ $page_content = include_template('add.php', ['projects' => $projects]);
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$required = ['name', 'project_id']; //  массив с параметрами, которые должны быть заполнены 
-	$errors = []; // массив с ошибками
-
+	$required = ['name', 'project_id'];
+	$errors = [];
+	
 	$rules = [
 		'name' => function($value) {
 			return valid_task_name($value);
@@ -32,16 +32,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	$task = filter_input_array(INPUT_POST, ['name' => FILTER_DEFAULT, 'project_id' => FILTER_DEFAULT, 'deadline_at' => FILTER_DEFAULT], true);
 
-	foreach ($task as $key => $value) { //обход и валидация
+	foreach ($task as $key => $value) { 
 		if (isset($rules[$key])) {
 			$rule = $rules[$key];
 			$errors[$key] = $rule($value);
 		}
-		if (in_array($key, $required)) { 
-			$errors[$key] = "Поле $key должно быть заполнено корректно"; //сохраняет ошибку в массив
+		if (in_array($key, $required) && empty($value)) { 
+			$errors[$key] = "Поле $key должно быть заполнено корректно";
 		}
 	}
-	$errors = array_filter($errors); // стирает все значения типа null 
+	$errors = array_filter($errors); 
 
 	if (!empty($_FILES['file']['name'])) {
 		$file_name = $_FILES['file']['name']; 
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			]
 		);
 	} else {
-		$sql = 'INSERT INTO task (created_at, name, project_id, deadline_at, user_id, file) VALUES (NOW(), ?, ?, ?, 2, ?)';
+		$sql = 'INSERT INTO tasks (created_at, name, project_id, deadline_at, user_id, file) VALUES (NOW(), ?, ?, ?, 2, ?)';
 		$stmt = db_get_prepare_stmt($connect, $sql, $task);
 		if ($stmt === false) {
 			report_error(mysqli_error($connect));
@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			report_error(mysqli_error($connect));
 		}
 		if ($result) {
-			$task_id = mysqli_insert_id($connect);
+
 			
 			header("Location: index.php");
 		}
