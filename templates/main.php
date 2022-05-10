@@ -51,7 +51,7 @@
                     </td>
                     <td class="task__file">
                         <?php if (!empty($task['file'])): ?>
-                        <a class="download-link" href="uploads/<?= $task['file'] ?>"><?= $task['file'] ?></a>
+                        <a class="download-link" href="uploads/<?= $task['file']; ?>"><?= htmlspecialchars($task['file']); ?></a>
                         <?php endif; ?>
                     </td>
                     <td class="task__date"><?= $task['deadline_at']; ?></td>

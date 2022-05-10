@@ -26,27 +26,27 @@ function valid_date($date) {
         return null;
     }
     if (!is_date_valid($date)) {
-        return "Это поле заполненно не корректно";
+        return 'Это поле заполненно не корректно';
     }
     if ($date < date('Y-m-d')) {
-        return "Дата выполнения задачи не должна быть позднее текущего дня";
+        return 'Дата выполнения задачи не должна быть позднее текущего дня';
     }
     return null;	
 }
 //проверка выбранного проекта на существование в категории
 function valid_projects($id, $allowed_list) {
     if (empty($id)) {
-        return "Это поле должно быть заполнено";
+        return 'Это поле должно быть заполнено';
     } 
     if (!in_array($id, $allowed_list)) {
-        return "Проект не найден";
+        return 'Проект не найден';
     }
     return null;
 }
 //проверка на заполенности строки имени задачи
 function valid_task_name($name) {
     if (empty($name)) {
-        return "Это поле должно быть заполнено";
+        return 'Это поле должно быть заполнено';
     } 
     return null;
 }

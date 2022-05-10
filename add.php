@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	];
 	
 	$task = filter_input_array(INPUT_POST, ['name' => FILTER_DEFAULT, 'project_id' => FILTER_DEFAULT, 'deadline_at' => FILTER_DEFAULT], true);
-	if (empty ($task['deadline_at'])){
+	if (empty($task['deadline_at'])){
 		$task['deadline_at'] = null;
 	}
 	foreach ($task as $key => $value) { 
@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$errors[$key] = $rule($value);
 		}
 		if (in_array($key, $required) && empty($value)) { 
-			$errors[$key] = "Поле $key должно быть заполнено корректно";
+			$errors[$key] = 'Поле $key должно быть заполнено корректно';
 		}
 	}
 	$errors = array_filter($errors);
