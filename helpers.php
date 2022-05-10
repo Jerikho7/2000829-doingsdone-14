@@ -13,11 +13,46 @@
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid(string $date) : bool {
+function is_date_valid($date) {
+    if (is_null($date)) {
+        return true;
+    }
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
+    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;   
+}
+function valid_date($date) {
+    if (is_null($date)) {
+        return null;
+    }
+    if (!is_date_valid($date)) {
+        return 'Это поле заполненно не корректно';
+    }
+    if ($date < date('Y-m-d')) {
+        return 'Дата выполнения задачи не должна быть позднее текущего дня';
+    }
+    return null;	
+}
+//проверка выбранного проекта на существование в категории
+function valid_projects($id, $allowed_list) {
+    if (empty($id)) {
+        return 'Это поле должно быть заполнено';
+    } 
+    if (!in_array($id, $allowed_list)) {
+        return 'Проект не найден';
+    }
+    return null;
+}
+//проверка на заполенности строки имени задачи
+function valid_task_name($name) {
+    if (empty($name)) {
+        return 'Это поле должно быть заполнено';
+    } 
+    return null;
+}
 
-    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
+function get_post_val($name) {
+    return filter_input(INPUT_POST, $name);
 }
 
 /**
@@ -130,6 +165,27 @@ function db_connect ($db)
     }
     mysqli_set_charset($link, 'utf8');
     return $link; 
+}
+//подключение проектов
+function projects_db ($connect, $user) {
+    $sql = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p '
+				. 'LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? '
+				. 'GROUP BY p.name ORDER BY p.name asc';
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
+	    report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user)) {
+	    report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+	    report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+	    report_error(mysqli_error($connect));
+    }
+	return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 //подключение ошибки
 function report_error($error)
