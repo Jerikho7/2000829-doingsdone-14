@@ -15,7 +15,7 @@
  */
 function is_date_valid($date) {
     if (is_null($date)) {
-        return true;
+        return false;
     }
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
@@ -23,7 +23,7 @@ function is_date_valid($date) {
 }
 function valid_date($date) {
     if (is_null($date)) {
-        return false;
+        return null;
     }
     if (is_date_valid($date) === false) {
         return "Это поле заполненно не корректно";
