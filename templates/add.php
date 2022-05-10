@@ -34,9 +34,9 @@
             <?php $classname = isset($errors['project_id']) ? "form__input--error" : ""; ?>
             
             <select class="form__input form__input--select <?= $classname; ?>" name="project_id" id="project">
-             <option value="<?= $project['id']; ?>">Выберите категорию</option>
+              <option value="">Выберите категорию</option>
               <?php foreach ($projects as $project): ?>
-                <option value="<?= $project['id']; ?>"<?php  if ($project['id'] === get_post_val('project_id')): ?>selected<?php endif; ?>><?= $project['name']; ?></option>
+                  <option value="<?= $project['id']; ?>" <?php  if ($project['id'] == get_post_val('project_id')): ?>selected<?php endif; ?>><?= $project['name']; ?></option>
               <?php endforeach; ?>
 
               <?php if (isset($errors['project_id'])): ?><p class="form__message"><?= $errors['project_id']; ?></p><?php endif; ?>

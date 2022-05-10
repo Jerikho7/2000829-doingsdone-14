@@ -5,14 +5,13 @@ $connect = db_connect($db);
 if (!$connect) {
 	report_error(mysqli_connect_error());
 };
-$user = 2;
+$user_id = 2;
 $project_id = filter_input(INPUT_GET, 'id');
 $projects_ids = [];
-$projects = projects_db($connect, $user);
+$projects = projects_db($connect, $user_id);
 $projects_ids = array_column($projects, 'id');
 
 $page_content = include_template('add.php', ['projects' => $projects]);
-
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$required = ['name', 'project_id'];
@@ -27,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		},
 		'deadline_at' => function($value) {
 			return valid_date($value);
-		}
+		},
 	];
 	
 	$task = filter_input_array(INPUT_POST, ['name' => FILTER_DEFAULT, 'project_id' => FILTER_DEFAULT, 'deadline_at' => FILTER_DEFAULT], true);
@@ -41,8 +40,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			$errors[$key] = "Поле $key должно быть заполнено корректно";
 		}
 	}
-	$errors = array_filter($errors); 
+	$errors = array_filter($errors);
 
+	$task += array('user_id' => $user_id);
+	
 	if (!empty($_FILES['file']['name'])) {
 		$file_name = $_FILES['file']['name']; 
 		$file_path = __DIR__ . '/uploads/';
@@ -52,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	} else {
 		$task['file'] = null;
 	};
-	
+
 	if (count($errors)) {
 		$page_content = include_template(
 			'add.php',
@@ -64,32 +65,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			]
 		);
 	} else {
-		$sql = 'INSERT INTO tasks (created_at, name, project_id, deadline_at, user_id, file) VALUES (NOW(), ?, ?, ?, 2, ?)';
+		$sql = 'INSERT INTO tasks (created_at, name, project_id, deadline_at, user_id, file) VALUES (NOW(), ?, ?, ?, ?, ?)';
 		$stmt = db_get_prepare_stmt($connect, $sql, $task);
 		if ($stmt === false) {
 			report_error(mysqli_error($connect));
 		}
-		if (!mysqli_stmt_execute($stmt)) {
-			report_error(mysqli_error($connect));
-		}
-		$result = mysqli_stmt_get_result($stmt);
+		$result = mysqli_stmt_execute($stmt);
 		if (!$result) {
 			report_error(mysqli_error($connect));
 		}
 		if ($result) {
-
-			
 			header("Location: index.php");
 		}
 	}	
 };
-
 $layout_content = include_template(
-		'layout.php',
-		[
-			'content' => $page_content,
-			'title' => 'Дела в порядке',
-			'user' => 'Евгения',
-		]
+	'layout.php',
+	[
+		'content' => $page_content,
+		'title' => 'Дела в порядке',
+		'user' => 'Евгения',
+	]
 );
 print($layout_content);

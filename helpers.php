@@ -15,7 +15,7 @@
  */
 function is_date_valid($date) {
     if (is_null($date)) {
-        return null;
+        return true;
     }
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
@@ -38,6 +38,9 @@ function valid_projects($id, $allowed_list) {
     if (!in_array($id, $allowed_list)) {
         return "Проект не найден";
     }
+    if (empty($id)) {
+        return "Это поле должно быть заполнено";
+    } 
     return null;
 }
 //проверка на заполенности строки имени задачи
