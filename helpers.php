@@ -15,7 +15,7 @@
  */
 function is_date_valid($date) {
     if (is_null($date)) {
-        return false;
+        return true;
     }
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
@@ -25,7 +25,7 @@ function valid_date($date) {
     if (is_null($date)) {
         return null;
     }
-    if (is_date_valid($date) === false) {
+    if (!is_date_valid($date)) {
         return "Это поле заполненно не корректно";
     }
     if ($date < date('Y-m-d')) {
@@ -35,12 +35,12 @@ function valid_date($date) {
 }
 //проверка выбранного проекта на существование в категории
 function valid_projects($id, $allowed_list) {
-    if (!in_array($id, $allowed_list)) {
-        return "Проект не найден";
-    }
     if (empty($id)) {
         return "Это поле должно быть заполнено";
     } 
+    if (!in_array($id, $allowed_list)) {
+        return "Проект не найден";
+    }
     return null;
 }
 //проверка на заполенности строки имени задачи
@@ -184,9 +184,8 @@ function projects_db ($connect, $user) {
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
 	    report_error(mysqli_error($connect));
-    } else {
-	    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-	};
+    }
+	return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 //подключение ошибки
 function report_error($error)

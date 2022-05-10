@@ -30,7 +30,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	];
 	
 	$task = filter_input_array(INPUT_POST, ['name' => FILTER_DEFAULT, 'project_id' => FILTER_DEFAULT, 'deadline_at' => FILTER_DEFAULT], true);
-
+	if (empty ($task['deadline_at'])){
+		$task['deadline_at'] = null;
+	}
 	foreach ($task as $key => $value) { 
 		if (isset($rules[$key])) {
 			$rule = $rules[$key];
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 	$errors = array_filter($errors);
 
-	$task += array('user_id' => $user_id);
+	$task['user_id'] = $user_id;
 	
 	if (!empty($_FILES['file']['name'])) {
 		$file_name = $_FILES['file']['name']; 
@@ -70,13 +72,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		if ($stmt === false) {
 			report_error(mysqli_error($connect));
 		}
-		$result = mysqli_stmt_execute($stmt);
-		if (!$result) {
+		if (!mysqli_stmt_execute($stmt)) {
 			report_error(mysqli_error($connect));
 		}
-		if ($result) {
-			header("Location: index.php");
-		}
+		header("Location: index.php");
 	}	
 };
 $layout_content = include_template(
