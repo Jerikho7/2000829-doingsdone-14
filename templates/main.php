@@ -49,6 +49,11 @@
                             <span class="checkbox__text"><?= htmlspecialchars($task['name']); ?></span>
                         </label>
                     </td>
+                    <td class="task__file">
+                        <?php if (!empty($task['file'])): ?>
+                        <a class="download-link" href="uploads/<?= $task['file'] ?>"><?= $task['file'] ?></a>
+                        <?php endif; ?>
+                    </td>
                     <td class="task__date"><?= $task['deadline_at']; ?></td>
                 </tr>
                 <?php endforeach; ?>
