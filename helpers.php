@@ -44,7 +44,7 @@ function valid_projects($id, $allowed_list) {
     return null;
 }
 //проверка заполненности
-function valid_task_name($name) {
+function required($name) {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
     } 
@@ -64,13 +64,13 @@ function valid_email($email, $allowed_list) {
     return null;
 }
 //проверка длины 
-function valid_lenght ($value, $min, $max) {
+function valid_lenght($value, $min, $max) {
     if (empty($value)) {
         return 'Это поле должно быть заполнено';  
     }
     $lenght = strlen($value);
-    if ($lenght < $min or $lenght > $max) {
-        return 'Значение должно быть от ' . $min . ' до ' . $max . ' символов';
+    if ($lenght < $min || $lenght > $max) {
+        return "Значение должно быть от $min до $max символов";
     }
     return null;
 }

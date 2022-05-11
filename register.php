@@ -22,11 +22,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			return valid_lenght($value, 6, 12);
 		},
 		'name' => function($value) {
-			return valid_task_name($value);
+			return required($value);
 		},
 	];
 	
-	$register = filter_input_array(INPUT_POST, ['name' => FILTER_DEFAULT, 'password' => FILTER_DEFAULT, 'email' => FILTER_DEFAULT], true);
+	$register = filter_input_array(INPUT_POST, ['email' => FILTER_DEFAULT, 'name' => FILTER_DEFAULT, 'password' => FILTER_DEFAULT], true);
 	
 	foreach ($register as $key => $value) { 
 		if (isset($rules[$key])) {
