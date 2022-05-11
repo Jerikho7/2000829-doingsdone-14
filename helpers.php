@@ -43,14 +43,37 @@ function valid_projects($id, $allowed_list) {
     }
     return null;
 }
-//проверка на заполенности строки имени задачи
+//проверка заполненности
 function valid_task_name($name) {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
     } 
     return null;
 }
-
+//проверкка email
+function valid_email($email, $allowed_list) {
+    if (empty($email)) {
+        return 'Это поле должно быть заполнено';  
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return 'Email должен быть корректным';
+    }
+    if (in_array($email, $allowed_list)){
+        return 'Пользователь с этим email уже зарегистрирован';
+    }
+    return null;
+}
+//проверка длины 
+function valid_lenght ($value, $min, $max) {
+    if (empty($value)) {
+        return 'Это поле должно быть заполнено';  
+    }
+    $lenght = strlen($value);
+    if ($lenght < $min or $lenght > $max) {
+        return 'Значение должно быть от ' . $min . ' до ' . $max . ' символов';
+    }
+    return null;
+}
 function get_post_val($name) {
     return filter_input(INPUT_POST, $name);
 }
@@ -182,6 +205,15 @@ function projects_db ($connect, $user) {
 	    report_error(mysqli_error($connect));
     }
     $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+	    report_error(mysqli_error($connect));
+    }
+	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+//подключение списка пользователей
+function users_db ($connect) {
+    $sql = 'SELECT id, email FROM users';
+    $result = mysqli_query($connect, $sql);
     if (!$result) {
 	    report_error(mysqli_error($connect));
     }
