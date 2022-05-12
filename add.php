@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	
 	$rules = [
 		'name' => function($value) {
-			return valid_task_name($value);
+			return required($value);
 		},
 		'project_id' => function($value) use ($projects_ids) {
 			return valid_projects($value, $projects_ids);
@@ -37,9 +37,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		if (isset($rules[$key])) {
 			$rule = $rules[$key];
 			$errors[$key] = $rule($value);
-		}
-		if (in_array($key, $required) && empty($value)) { 
-			$errors[$key] = 'Поле $key должно быть заполнено корректно';
 		}
 	}
 	$errors = array_filter($errors);
