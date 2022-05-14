@@ -74,6 +74,24 @@ function valid_lenght($value, $min, $max) {
     }
     return null;
 }
+//проверка email на входе
+function valid_auth_email($email) {
+    if (empty($email)) {
+        return 'Это поле должно быть заполнено';  
+    }
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        return 'Email должен быть корректным';
+    }
+    return null;
+}
+//проверка password на входе
+function valid_auth_password($password) {
+    if (empty($password)) {
+        return 'Это поле должно быть заполнено';        
+    }
+    return null;
+}
+
 function get_post_val($name) {
     return filter_input(INPUT_POST, $name);
 }

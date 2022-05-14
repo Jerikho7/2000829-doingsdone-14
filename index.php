@@ -1,18 +1,16 @@
 <?php
-date_default_timezone_set('Asia/Sakhalin');
 require_once('helpers.php');
-$db = require_once('db.php');
+require_once('init.php');
 
-$connect = db_connect($db);
-if (!$connect) {
-	report_error(mysqli_connect_error());
-};
+/*if (is_null($user)) {
+	$page_content = include_template('guest.php');
+} else {
+*/
+$user =2;
 $projects = [];
 $tasks = [];
 $page_content = '';
-$show_complete_tasks = rand(0, 1);
-$user = 2;
-
+$show_complete_tasks = rand(0, 1);	
 $projects = projects_db($connect, $user);
 
 $project_id = filter_input(INPUT_GET, 'id');
@@ -58,12 +56,14 @@ $page_content = include_template(
 	]
 );
 
+
+
 $layout_content = include_template(
 	'layout.php',
 	[
 		'content' => $page_content,
 		'title' => 'Дела в порядке',
-		'user' => 'Евгения',
+		'user' => $user,
 	]
 );
 
