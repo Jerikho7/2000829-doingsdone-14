@@ -28,43 +28,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 	$errors = array_filter($errors);
 
+	$email = $auth['email'];
+	$sql = 'SELECT * FROM users WHERE email = ?';
+	$stmt = mysqli_prepare($connect, $sql);
+	if ($stmt === false) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_bind_param($stmt, 's', $email)) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_execute($stmt)) {
+		report_error(mysqli_error($connect));
+	}
+	$result = mysqli_stmt_get_result($stmt);
+	if (!$result) {
+		report_error(mysqli_error($connect));
+	} 
+	$user = mysqli_fetch_array($result, MYSQLI_ASSOC);
+
 	if (count($errors)) {
 		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
-	} else {
-			$email = $auth['email'];
-		$sql = 'SELECT * FROM users WHERE email = ?';
-		$stmt = mysqli_prepare($connect, $sql);
-		if ($stmt === false) {
-    		report_error(mysqli_error($connect));
-		}
-		if (!mysqli_stmt_bind_param($stmt, 's', $email)) {
-    		report_error(mysqli_error($connect));
-		}
-		if (!mysqli_stmt_execute($stmt)) {
-			report_error(mysqli_error($connect));
-		}
-		$result = mysqli_stmt_get_result($stmt);
-		if (!$result) {
-			report_error(mysqli_error($connect));
-		} 
-		$user = mysqli_fetch_all($result, MYSQLI_ASSOC);
-	}	
-
-	if (empty($user)) {
+	} elseif (empty($user)) {
 		$errors['email'] = 'Пользователь не найден';
+		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);   
 	} else {
 		if (password_verify($auth['password'], $user['password'])) {
-			$_SESSION['user'] = [
-				'id' => $user['id'],
-				'name' => $user['name'],
-			];
+            $_SESSION['user'] = [
+                'id' => $user['id'],
+                'name' => $user['name'],
+            ];
 			header("Location: index.php");
-			exit();
-		} else {
-			$errors['password'] = 'Пароль введен не верно';
-		}
+        	exit();
+        } else {
+            $errors['password'] = 'Пароль введен не верно';
+			$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
+        }
 	}
-	
 };
 
 $layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке','user' => '',]);
