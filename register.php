@@ -61,7 +61,6 @@ $layout_content = include_template(
 	[
 		'content' => $page_content,
 		'title' => 'Дела в порядке',
-		'user' => '',
 	]
 );
 print($layout_content);

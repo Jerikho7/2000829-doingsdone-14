@@ -57,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $user['id'],
                 'name' => $user['name'],
             ];
+			$user_id = $_SESSION['user']['id'];
+			$user_name = $_SESSION['user']['name'];
 			header("Location: index.php");
         	exit();
         } else {
@@ -66,5 +68,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 };
 
-$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке','user' => '',]);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
 print($layout_content);
