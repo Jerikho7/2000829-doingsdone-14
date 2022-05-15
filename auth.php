@@ -29,7 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$errors = array_filter($errors);
 
 	if (count($errors)) {
-		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
+		$error_message = 'Пожалуйста, исправьте ошибки в форме';
+		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors, 'error_message' => $error_message,]);
 		$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
 		print($layout_content);
 		exit;
@@ -54,21 +55,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	$user = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
 	
-	if (empty($user)) {
-		$errors['email'] = 'Пользователь не найден';
-		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);   
+	if (empty($user) || !password_verify($auth['password'], $user['password'])) {
+		$errors['email'] = '';
+		$errors['password'] = '';
+		$error_message = 'Вы ввели неверный email/пароль';
+		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors, 'error_message' => $error_message,]);   
 	} else {
-		if (password_verify($auth['password'], $user['password'])) {
-            $_SESSION['user'] = [
-                'id' => $user['id'],
-                'name' => $user['name'],
-            ];
-			header("Location: index.php");
-        	exit();
-        } else {
-            $errors['password'] = 'Пароль введен не верно';
-			$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
-        }
+		$_SESSION['user'] = [
+            'id' => $user['id'],
+            'name' => $user['name'],
+        ];
+		header("Location: index.php");
+        exit();
 	}
 };
 

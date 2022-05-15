@@ -23,8 +23,12 @@
         </div>
 
         <div class="form__row form__row--controls">
+            <?php if (isset($errors)) : ?>
+            <p class="error-message"><?= $error_message; ?></p>
+            <?php endif; ?>
             <input class="button" type="submit" name="" value="Войти">
         </div>
+
     </form>
 
 </main>
