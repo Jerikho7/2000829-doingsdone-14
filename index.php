@@ -66,6 +66,4 @@ if (!isset($user_id)) {
 	);
 };
 
-
-
 print($layout_content);

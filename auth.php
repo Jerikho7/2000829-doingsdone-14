@@ -57,8 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $user['id'],
                 'name' => $user['name'],
             ];
-			$user_id = $_SESSION['user']['id'];
-			$user_name = $_SESSION['user']['name'];
 			header("Location: index.php");
         	exit();
         } else {

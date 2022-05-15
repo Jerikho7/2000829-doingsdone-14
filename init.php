@@ -5,6 +5,7 @@ if (isset($_SESSION['user'])) {
 	$user_name = $_SESSION['user']['name'];
 }
 
+
 define('CACHE_DIR', basename(__DIR__ . DIRECTORY_SEPARATOR . 'cache'));
 define('UPLOAD_PATH', basename(__DIR__ . DIRECTORY_SEPARATOR . 'uploads'));
 
