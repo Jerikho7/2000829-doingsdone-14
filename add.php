@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		$file_name = $_FILES['file']['name']; 
 		$file_path = __DIR__ . '/uploads/';
 		$file_url = '/uploads/' . $file_name;
-		$task['file'] = $file_url;
+		$task['file'] = $file_name;
 		move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
 	} else {
 		$task['file'] = null;

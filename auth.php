@@ -28,6 +28,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 	$errors = array_filter($errors);
 
+	if (count($errors)) {
+		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
+		$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
+		print($layout_content);
+		exit;
+	}
+
 	$email = $auth['email'];
 	$sql = 'SELECT * FROM users WHERE email = ?';
 	$stmt = mysqli_prepare($connect, $sql);
@@ -46,9 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	} 
 	$user = mysqli_fetch_array($result, MYSQLI_ASSOC);
 
-	if (count($errors)) {
-		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
-	} elseif (empty($user)) {
+	
+	if (empty($user)) {
 		$errors['email'] = 'Пользователь не найден';
 		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);   
 	} else {
