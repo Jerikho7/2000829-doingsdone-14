@@ -2,11 +2,10 @@
 require_once('helpers.php');
 require_once('init.php');
 
-
-//$page_content = include_template('auth.php', ['auth' => $auth]);
+$auth = [];
+$page_content = include_template('auth.php', ['auth' => $auth]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$auth = $_POST;
     $required = ['email', 'password'];
 	$errors = [];
 
@@ -15,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			return valid_auth_email($value);
 		},
 		'password' => function($value) {
-			return valid_auth_password($value);
+			return required($value);
 		},
 	];
 
@@ -29,53 +28,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 	$errors = array_filter($errors);
 
-	$email = mysqli_real_escape_string($connect, $auth['email']);
-	$sql = 'SELECT * FROM users WHERE email = "$email"';
-	$result = mysqli_query($connect, $sql);
-	if (!$result) {
-		report_error(mysqli_error($connect));
-	}
-
-	$user = $result ? mysqli_fetch_array($result, MYSQLI_ASSOC) : null;
-
-	if (!count($errors) and isset($user)) {
-		if (password_verify($auth['password'], $user['password'])) {
-			$_SESSION['user'] = $user;	
-		} else {
-			$errors['password'] = 'Неверный пароль';
-		}
+	if (count($errors)) {
+		$page_content = include_template('auth.php', ['auth' => $auth, 'errors' => $errors,]);
 	} else {
-		$errors['email'] = 'Такой пользователь не найден';
+			$email = $auth['email'];
+		$sql = 'SELECT * FROM users WHERE email = ?';
+		$stmt = mysqli_prepare($connect, $sql);
+		if ($stmt === false) {
+    		report_error(mysqli_error($connect));
+		}
+		if (!mysqli_stmt_bind_param($stmt, 's', $email)) {
+    		report_error(mysqli_error($connect));
+		}
+		if (!mysqli_stmt_execute($stmt)) {
+			report_error(mysqli_error($connect));
+		}
+		$result = mysqli_stmt_get_result($stmt);
+		if (!$result) {
+			report_error(mysqli_error($connect));
+		} 
+		$user = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	}	
+
+	if (empty($user)) {
+		$errors['email'] = 'Пользователь не найден';
+	} else {
+		if (password_verify($auth['password'], $user['password'])) {
+			$_SESSION['user'] = [
+				'id' => $user['id'],
+				'name' => $user['name'],
+			];
+			header("Location: index.php");
+			exit();
+		} else {
+			$errors['password'] = 'Пароль введен не верно';
+		}
 	}
 	
-	if (count($errors)) {
-		$page_content = include_template(
-			'auth.php',
-			[
-				'auth' => $auth,
-				'errors' => $errors,
-			]
-		);
-	} else {
-		header("Location: index.php");
-		exit();
-	}
-} else {
-	$page_content = include_template('auth.php', []);
+};
 
-	if (isset($_SESSION['user'])) {
-		header("Location: index.php");
-		exit();
-	}
-
-}
-
-$layout_content = include_template(
-	'layout.php',
-	[
-		'content' => $page_content,
-		'title' => 'Дела в порядке',
-		'user' => '',
-	]
-);
+$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке','user' => '',]);
 print($layout_content);

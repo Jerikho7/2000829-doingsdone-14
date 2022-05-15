@@ -84,13 +84,6 @@ function valid_auth_email($email) {
     }
     return null;
 }
-//проверка password на входе
-function valid_auth_password($password) {
-    if (empty($password)) {
-        return 'Это поле должно быть заполнено';        
-    }
-    return null;
-}
 
 function get_post_val($name) {
     return filter_input(INPUT_POST, $name);

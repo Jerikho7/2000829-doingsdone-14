@@ -2,9 +2,10 @@
 require_once('helpers.php');
 require_once('init.php');
 
+$user_id = 2;
 $project_id = filter_input(INPUT_GET, 'id');
 $projects_ids = [];
-$projects = projects_db($connect, $user);
+$projects = projects_db($connect, $user_id);
 $projects_ids = array_column($projects, 'id');
 
 $page_content = include_template('add.php', ['projects' => $projects]);
@@ -37,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 	}
 	$errors = array_filter($errors);
 
-	$task['user_id'] = $user;
+	$task['user_id'] = $user_id;
 	
 	if (!empty($_FILES['file']['name'])) {
 		$file_name = $_FILES['file']['name']; 
@@ -76,7 +77,7 @@ $layout_content = include_template(
 	[
 		'content' => $page_content,
 		'title' => 'Дела в порядке',
-		'user' => $user,
+		'user' => 'Евгения',
 	]
 );
 print($layout_content);

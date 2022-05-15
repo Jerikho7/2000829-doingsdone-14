@@ -2,10 +2,6 @@
 require_once('helpers.php');
 require_once('init.php');
 
-/*if (is_null($user)) {
-	$page_content = include_template('guest.php');
-} else {
-*/
 $user =2;
 $projects = [];
 $tasks = [];
@@ -63,7 +59,7 @@ $layout_content = include_template(
 	[
 		'content' => $page_content,
 		'title' => 'Дела в порядке',
-		'user' => $user,
+		'user' => 'Евгения',
 	]
 );
 
