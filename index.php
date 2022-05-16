@@ -44,9 +44,9 @@ if (!$res) {
 	report_error(mysqli_error($connect));
 }
 $tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
-	if (count($tasks) === 0) {
-		report_error_404('в выбранной категории нет задач');
-	};
+if (count($tasks) === 0) {
+	report_error_404('в выбранной категории нет задач');
+};
 
 $page_content = include_template(
 	'main.php',
