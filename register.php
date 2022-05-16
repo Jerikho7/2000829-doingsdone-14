@@ -1,10 +1,7 @@
 <?php
 require_once('helpers.php');
-$db = require_once('db.php');
-$connect = db_connect($db);
-if (!$connect) {
-	report_error(mysqli_connect_error());
-};
+require_once('init.php');
+
 $register = [];
 $users = users_db($connect);
 $emails = array_column($users, 'email');
@@ -45,6 +42,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 			]
 		);
 	} else {
+		$password = password_hash($register['password'], PASSWORD_DEFAULT);
+		$register['password'] = $password;
 		$sql = 'INSERT INTO users (created_at, email, name, password) VALUES (NOW(), ?, ?, ?)';
 		$stmt = db_get_prepare_stmt($connect, $sql, $register);
 		if ($stmt === false) {
@@ -62,7 +61,6 @@ $layout_content = include_template(
 	[
 		'content' => $page_content,
 		'title' => 'Дела в порядке',
-		'user' => '',
 	]
 );
 print($layout_content);

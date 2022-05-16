@@ -1,11 +1,7 @@
 <?php
 require_once('helpers.php');
-$db = require_once('db.php');
-$connect = db_connect($db);
-if (!$connect) {
-	report_error(mysqli_connect_error());
-};
-$user_id = 2;
+require_once('init.php');
+
 $project_id = filter_input(INPUT_GET, 'id');
 $projects_ids = [];
 $projects = projects_db($connect, $user_id);
@@ -47,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		$file_name = $_FILES['file']['name']; 
 		$file_path = __DIR__ . '/uploads/';
 		$file_url = '/uploads/' . $file_name;
-		$task['file'] = $file_url;
+		$task['file'] = $file_name;
 		move_uploaded_file($_FILES['file']['tmp_name'], $file_path . $file_name);
 	} else {
 		$task['file'] = null;
