@@ -237,10 +237,10 @@ function tasks_db ($connect, $project_id, $user_id) {
         $sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';
         $stmt = mysqli_prepare($connect, $sql_tasks);
         if ($stmt === false) {
-               report_error(mysqli_error($connect));
+            report_error(mysqli_error($connect));
         }
         if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
-               report_error(mysqli_error($connect));
+            report_error(mysqli_error($connect));
         }
     }
     if (!mysqli_stmt_execute($stmt)) {

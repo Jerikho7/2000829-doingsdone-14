@@ -15,10 +15,6 @@ $page_content = '';
 $show_complete_tasks = rand(0, 1);	
 $projects = projects_db($connect, $user_id);
 $project_id = filter_input(INPUT_GET, 'id');
-$tasks = tasks_db($connect, $project_id, $user_id);
-if (count($tasks) === 0) {
-	report_error_404('в выбранной категории нет задач');
-};
 
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
 $massage = '';
@@ -45,8 +41,12 @@ if ($search) {
 	if (count($tasks) === 0) {
 		$massage = 'Ничего не найдено по вашему запросу';
 	}
-} 
-
+} else {
+	$tasks = tasks_db($connect, $project_id, $user_id);
+	if (count($tasks) === 0) {
+		report_error_404('в выбранной категории нет задач');
+	};
+}
 
 $page_content = include_template(
 	'main.php',
