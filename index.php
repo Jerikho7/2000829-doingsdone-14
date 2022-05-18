@@ -16,11 +16,11 @@ $show_complete_tasks = rand(0, 1);
 $projects = projects_db($connect, $user_id);
 $project_id = filter_input(INPUT_GET, 'id');
 
-$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+
+$search = get_search_parameter($connect);
 $massage = '';
 
 if ($search) {
-	$search = trim($search);
 	$sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
 		. 'FROM tasks t JOIN projects p on p.id = t.project_id '
 		. 'WHERE p.user_id = ? AND MATCH(t.name) AGAINST(?)';
