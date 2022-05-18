@@ -193,8 +193,7 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
 function  get_search_parameter($connect) {
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
-        header("Location: index.php");
-            exit();
+        return null;
     }
     return $search = trim($search);
 }
