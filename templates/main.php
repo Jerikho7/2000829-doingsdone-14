@@ -20,7 +20,7 @@
             <h2 class="content__main-heading">Список задач</h2>
 
             <form class="search-form" action="index.php" method="GET" autocomplete="off">
-                <input class="search-form__input" type="text" name="search" value="<?= filter_input(INPUT_GET, 'search'); ?>" placeholder="Поиск по задачам">
+                <input class="search-form__input" type="text" name="search" value="<?= $search; ?>" placeholder="Поиск по задачам">
 
                 <input class="search-form__submit" type="submit" name="" value="Искать">
             </form>
