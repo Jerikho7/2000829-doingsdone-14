@@ -19,7 +19,7 @@ $project_id = filter_input(INPUT_GET, 'id');
 $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
 $massage = '';
 
-if (isset($search)) {
+if ($search) {
 	$search = trim($search);
 	$sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
 		. 'FROM tasks t JOIN projects p on p.id = t.project_id '
