@@ -15,38 +15,38 @@ $page_content = '';
 $show_complete_tasks = rand(0, 1);	
 $projects = projects_db($connect, $user_id);
 $project_id = filter_input(INPUT_GET, 'id');
-	
-if ($project_id) {
-	$sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks '
-				. 'WHERE user_id = ? AND project_id = ?';
-	$stmt = mysqli_prepare($connect, $sql_tasks);
-	if ($stmt === false) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_bind_param($stmt, 'ii', $user_id, $project_id)) {
-		report_error(mysqli_error($connect));
-	}
-} else {
-	$sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';
-	$stmt = mysqli_prepare($connect, $sql_tasks);
-	if ($stmt === false) {
-   		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
-   		report_error(mysqli_error($connect));
-	}
-}
-if (!mysqli_stmt_execute($stmt)) {
-	report_error(mysqli_error($connect));
-}
-$res = mysqli_stmt_get_result($stmt);
-if (!$res) {
-	report_error(mysqli_error($connect));
-}
-$tasks = mysqli_fetch_all($res, MYSQLI_ASSOC);
+$tasks = tasks_db($connect, $project_id, $user_id);
 if (count($tasks) === 0) {
 	report_error_404('в выбранной категории нет задач');
 };
+
+$search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+$massage = '';
+if ($search) {
+	$search = trim($search);
+	$sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
+		. 'FROM tasks t JOIN projects p on p.id = t.project_id '
+		. 'WHERE p.user_id = ? AND MATCH(t.name) AGAINST(?)';
+	$stmt = mysqli_prepare($connect, $sql);
+	if ($stmt === false) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_bind_param($stmt, 'is', $user_id, $search)) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_execute($stmt)) {
+		report_error(mysqli_error($connect));
+	}
+	$result = mysqli_stmt_get_result($stmt);
+	if (!$result) {
+		report_error(mysqli_error($connect));
+	}
+	$tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	if (count($tasks) === 0) {
+		$massage = 'Ничего не найдено по вашему запросу';
+	}
+} 
+
 
 $page_content = include_template(
 	'main.php',
@@ -55,6 +55,7 @@ $page_content = include_template(
 		'project_id' => $project_id,
 		'tasks' => $tasks,
 		'show_complete_tasks' => $show_complete_tasks,
+		'massage' => $massage,
 	]
 );
 
