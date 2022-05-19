@@ -189,6 +189,15 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
     }
 }
 
+//получение запроса на поиск
+function  get_search_parameter($connect) {
+    $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
+    if ($search === null) {
+        return null;
+    }
+    return $search = trim($search);
+}
+
 //подключение к БД
 function db_connect ($db) 
 {
@@ -220,6 +229,37 @@ function projects_db ($connect, $user) {
 	    report_error(mysqli_error($connect));
     }
 	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+//подключение задач 
+function tasks_db ($connect, $project_id, $user_id) {
+    if ($project_id) {
+        $sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks '
+                    . 'WHERE user_id = ? AND project_id = ?';
+        $stmt = mysqli_prepare($connect, $sql_tasks);
+        if ($stmt === false) {
+            report_error(mysqli_error($connect));
+        }
+        if (!mysqli_stmt_bind_param($stmt, 'ii', $user_id, $project_id)) {
+            report_error(mysqli_error($connect));
+        }
+    } else {
+        $sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';
+        $stmt = mysqli_prepare($connect, $sql_tasks);
+        if ($stmt === false) {
+            report_error(mysqli_error($connect));
+        }
+        if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+            report_error(mysqli_error($connect));
+        }
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $res = mysqli_stmt_get_result($stmt);
+    if (!$res) {
+        report_error(mysqli_error($connect));
+    }
+	return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 //подключение списка пользователей
 function users_db ($connect) {
