@@ -14,7 +14,7 @@ CREATE TABLE users (
 
 CREATE TABLE projects (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(255) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
   user_id INT,
   FOREIGN KEY (user_id) REFERENCES users (id)
 );

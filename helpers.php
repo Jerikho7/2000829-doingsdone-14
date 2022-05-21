@@ -43,6 +43,16 @@ function valid_projects($id, $allowed_list) {
     }
     return null;
 }
+//проверка имени проекта
+function valid_project_name($name, $allowed_list) {
+    if (empty($name)) {
+        return 'Это поле должно быть заполнено';
+    } 
+    if (in_array($name, $allowed_list)) {
+        return 'Проект с этим названием уже существует';
+    }
+    return null;
+}
 //проверка заполненности
 function required($name) {
     if (empty($name)) {
@@ -213,7 +223,7 @@ function db_connect ($db)
 function projects_db ($connect, $user) {
     $sql = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p '
 				. 'LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? '
-				. 'GROUP BY p.name ORDER BY p.name asc';
+				. 'GROUP BY p.id ORDER BY p.name asc';
     $stmt = mysqli_prepare($connect, $sql);
     if ($stmt === false) {
 	    report_error(mysqli_error($connect));

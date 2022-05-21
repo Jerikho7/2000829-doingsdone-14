@@ -16,7 +16,6 @@ $show_complete_tasks = rand(0, 1);
 $projects = projects_db($connect, $user_id);
 $project_id = filter_input(INPUT_GET, 'id');
 
-
 $search = get_search_parameter($connect);
 $massage = '';
 
