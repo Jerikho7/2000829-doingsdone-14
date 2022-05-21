@@ -216,9 +216,7 @@ function filter ($connect, $today, $tomorrow, $overdue, $user_id) {
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
     } elseif ($overdue) {
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
-    } else {
-        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';    
-    }
+    } 
     $stmt = mysqli_prepare($connect, $sql);
      if ($stmt === false) {
         report_error(mysqli_error($connect));
