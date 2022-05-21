@@ -69,7 +69,8 @@ $today = filter_input(INPUT_GET, 'today', FILTER_SANITIZE_SPECIAL_CHARS);
 $tomorrow = filter_input(INPUT_GET, 'tomorrow', FILTER_SANITIZE_SPECIAL_CHARS);
 $overdue = filter_input(INPUT_GET, 'overdue', FILTER_SANITIZE_SPECIAL_CHARS);
 
-$tasks_filter = filter($connect, $today, $tomorrow, $overdue, $user_id);
+$tasks = filter($connect, $today, $tomorrow, $overdue, $user_id);
+
 
 $page_content = include_template(
 	'main.php',
@@ -80,7 +81,6 @@ $page_content = include_template(
 		'show_complete_tasks' => $show_complete_tasks,
 		'massage' => $massage,
 		'search' => $search,
-		'tasks_filter' => $tasks_filter,
 		'today' => $today,
 		'tomorrow' => $tomorrow,
 		'overdue' => $overdue,
