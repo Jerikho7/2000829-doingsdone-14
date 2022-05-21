@@ -12,7 +12,6 @@ if (!isset($user_id)) {
 $projects = [];
 $tasks = [];
 $page_content = '';
-$show_complete_tasks = rand(0, 1);	
 $projects = projects_db($connect, $user_id);
 $project_id = filter_input(INPUT_GET, 'id');
 
@@ -48,7 +47,7 @@ if ($search) {
 	};
 }
 
-$task_id = filter_input(INPUT_GET, 'id');
+$task_id = filter_input(INPUT_GET, 'task_id');
 $checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
 
 if ($checked) {
@@ -64,8 +63,65 @@ if ($checked) {
 		report_error(mysqli_error($connect));
 	}
 }
+$show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_SANITIZE_SPECIAL_CHARS);
 
-
+$today = filter_input(INPUT_GET, 'today', FILTER_SANITIZE_SPECIAL_CHARS);
+if ($today) {
+    $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = CURDATE() AND user_id = ?';
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    $tasks =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+$tomorrow = filter_input(INPUT_GET, 'tomorrow', FILTER_SANITIZE_SPECIAL_CHARS);
+if ($tomorrow) {
+    $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    $tasks =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+$overdue = filter_input(INPUT_GET, 'overdue', FILTER_SANITIZE_SPECIAL_CHARS);
+if ($overdue) {
+    $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    $tasks =  mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 
 $page_content = include_template(
 	'main.php',
@@ -76,6 +132,9 @@ $page_content = include_template(
 		'show_complete_tasks' => $show_complete_tasks,
 		'massage' => $massage,
 		'search' => $search,
+		'today' => $today,
+		'tomorrow' => $tomorrow,
+		'overdue' => $overdue,
 	]
 );
 
