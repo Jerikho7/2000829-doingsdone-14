@@ -207,6 +207,37 @@ function  get_search_parameter($connect) {
     }
     return $search = trim($search);
 }
+//фильтр
+function filter ($connect, $today, $tomorrow, $overdue, $user_id) {
+    
+    if ($today) {
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = CURDATE() AND user_id = ?';
+    } elseif ($tomorrow) {
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
+    } elseif ($overdue) {
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
+    } else {
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';    
+    }
+    $stmt = mysqli_prepare($connect, $sql);
+     if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 //подключение к БД
 function db_connect ($db) 
 {
