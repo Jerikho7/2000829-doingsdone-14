@@ -48,6 +48,25 @@ if ($search) {
 	};
 }
 
+$task_id = filter_input(INPUT_GET, 'id');
+$checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
+
+if ($checked) {
+	$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+	$stmt = mysqli_prepare($connect, $sql);
+	if ($stmt === false) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_bind_param($stmt, 'iii', $checked, $task_id, $user_id)) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_execute($stmt)) {
+		report_error(mysqli_error($connect));
+	}
+}
+
+
+
 $page_content = include_template(
 	'main.php',
 	[

@@ -207,7 +207,6 @@ function  get_search_parameter($connect) {
     }
     return $search = trim($search);
 }
-
 //подключение к БД
 function db_connect ($db) 
 {
