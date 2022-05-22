@@ -1,6 +1,12 @@
 <?php
 require_once('helpers.php');
 require_once('init.php');
+if (!isset($user_id)) {
+	$page_content = include_template('guest.php');
+	$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
+	print($layout_content);
+	exit();
+}
 
 $project_name = filter_input(INPUT_GET, 'name');
 $projects_names = [];
