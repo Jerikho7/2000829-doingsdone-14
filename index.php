@@ -13,67 +13,29 @@ $projects = [];
 $tasks = [];
 $page_content = '';
 $projects = projects_db($connect, $user_id);
-$project_id = filter_input(INPUT_GET, 'id');
+$project_id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_SPECIAL_CHARS);
 
 $search = get_search_parameter($connect);
 $massage = '';
 $filter = filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_SPECIAL_CHARS);
 $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_SANITIZE_SPECIAL_CHARS);
-$task_id = filter_input(INPUT_GET, 'task_id');
-$checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
 
-if ($search) {
-	$sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
-		. 'FROM tasks t JOIN projects p on p.id = t.project_id '
-		. 'WHERE p.user_id = ? AND MATCH(t.name) AGAINST(?)';
-	$stmt = mysqli_prepare($connect, $sql);
-	if ($stmt === false) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_bind_param($stmt, 'is', $user_id, $search)) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_execute($stmt)) {
-		report_error(mysqli_error($connect));
-	}
-	$result = mysqli_stmt_get_result($stmt);
-	if (!$result) {
-		report_error(mysqli_error($connect));
-	}
-	$tasks = mysqli_fetch_all($result, MYSQLI_ASSOC);
-	if (count($tasks) === 0) {
-		$massage = 'Ничего не найдено по вашему запросу';
-	}
-} elseif ($filter) {
-	$tasks = filter($connect, $filter, $user_id);
-} else {
-	switch ($checked) {
-		case 0:
-			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
-			break;
-		case 1:
-			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
-			break;
-	}
-	$stmt = mysqli_prepare($connect, $sql);
-	if ($stmt === false) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_bind_param($stmt, 'iii', $checked, $task_id, $user_id)) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_execute($stmt)) {
-		report_error(mysqli_error($connect));
-	}
+$task_checked = change_status($connect, $user_id, $tasks);
 	$tasks = tasks_db($connect, $project_id, $user_id);
 	if (count($tasks) === 0) {
 		report_error_404('в выбранной категории нет задач');
 	};
-}
-
-
-
-
+if ($search) {
+	$tasks = search($connect, $user_id, $search);
+	if (count($tasks) === 0) {
+		$massage = 'Ничего не найдено по вашему запросу';
+	}
+	$task_checked = change_status($connect, $user_id, $tasks);
+} 
+if ($filter) {
+	$tasks = filter($connect, $filter, $user_id);
+	$task_checked = change_status($connect, $user_id, $tasks);
+} 
 
 $page_content = include_template(
 	'main.php',
