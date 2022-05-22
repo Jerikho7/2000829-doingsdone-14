@@ -208,7 +208,7 @@ function  get_search_parameter($connect) {
     return $search = trim($search);
 }
 //выполнено
-function  change_status($connect, $user_id, $tasks) {
+function  change_status($connect, $user_id) {
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_SANITIZE_SPECIAL_CHARS);
     $checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
     switch ($checked) {
@@ -229,7 +229,6 @@ function  change_status($connect, $user_id, $tasks) {
 	if (!mysqli_stmt_execute($stmt)) {
 		report_error(mysqli_error($connect));
 	}
-    return $tasks;
 }
 //поиск
 function search ($connect, $user_id, $search) {
