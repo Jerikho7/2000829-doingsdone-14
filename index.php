@@ -18,7 +18,9 @@ $project_id = filter_input(INPUT_GET, 'id');
 $search = get_search_parameter($connect);
 $massage = '';
 $filter = filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_SPECIAL_CHARS);
-
+$show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_SANITIZE_SPECIAL_CHARS);
+$task_id = filter_input(INPUT_GET, 'task_id');
+$checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
 
 if ($search) {
 	$sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
@@ -45,17 +47,14 @@ if ($search) {
 } elseif ($filter) {
 	$tasks = filter($connect, $filter, $user_id);
 } else {
-	$tasks = tasks_db($connect, $project_id, $user_id);
-	if (count($tasks) === 0) {
-		report_error_404('в выбранной категории нет задач');
-	};
-}
-$show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_SANITIZE_SPECIAL_CHARS);
-$task_id = filter_input(INPUT_GET, 'task_id');
-$checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
-
-if ($checked) {
-	$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+	switch ($checked) {
+		case 0:
+			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+			break;
+		case 1:
+			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+			break;
+	}
 	$stmt = mysqli_prepare($connect, $sql);
 	if ($stmt === false) {
 		report_error(mysqli_error($connect));
@@ -66,7 +65,15 @@ if ($checked) {
 	if (!mysqli_stmt_execute($stmt)) {
 		report_error(mysqli_error($connect));
 	}
+	$tasks = tasks_db($connect, $project_id, $user_id);
+	if (count($tasks) === 0) {
+		report_error_404('в выбранной категории нет задач');
+	};
 }
+
+
+
+
 
 $page_content = include_template(
 	'main.php',
