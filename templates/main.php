@@ -27,10 +27,10 @@
 
             <div class="tasks-controls">
                 <nav class="tasks-switch">
-                    <a href="index.php" class="tasks-switch__item <?php  if (empty($today || $tomorrow || $overdue)) : ?>tasks-switch__item--active<?php endif; ?>">Все задачи</a>
-                    <a href="index.php?today=1" class="tasks-switch__item <?php  if ($today) : ?>tasks-switch__item--active<?php endif; ?>">Повестка дня</a>
-                    <a href="index.php?tomorrow=1" class="tasks-switch__item <?php  if ($tomorrow) : ?>tasks-switch__item--active<?php endif; ?>">Завтра</a>
-                    <a href="index.php?overdue=1" class="tasks-switch__item <?php  if ($overdue) : ?>tasks-switch__item--active<?php endif; ?>">Просроченные</a>
+                    <a href="index.php" class="tasks-switch__item <?php  if (empty($filter)) : ?>tasks-switch__item--active<?php endif; ?>">Все задачи</a>
+                    <a href="index.php?filter=today" class="tasks-switch__item <?php  if ($filter == 'today') : ?>tasks-switch__item--active<?php endif; ?>">Повестка дня</a>
+                    <a href="index.php?filter=tomorrow" class="tasks-switch__item <?php  if ($filter == 'tomorrow') : ?>tasks-switch__item--active<?php endif; ?>">Завтра</a>
+                    <a href="index.php?filter=overdue" class="tasks-switch__item <?php  if ($filter =='overdue') : ?>tasks-switch__item--active<?php endif; ?>">Просроченные</a>
                 </nav>
 
                 <label class="checkbox">

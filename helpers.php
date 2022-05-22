@@ -208,20 +208,20 @@ function  get_search_parameter($connect) {
     return $search = trim($search);
 }
 //фильтр
-function filter ($connect, $today, $tomorrow, $overdue, $user_id) {
-    
-    if ($today) {
+function filter ($connect, $filter, $user_id) {
+    switch ($filter) {
+    case 'today':
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = CURDATE() AND user_id = ?';
-    } elseif ($tomorrow) {
+        break; 
+    case 'tomorrow':
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
-    } elseif ($overdue) {
+        break;
+    case 'overdue':
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
-    } 
+        break;
+    }
     $stmt = mysqli_prepare($connect, $sql);
      if ($stmt === false) {
-        report_error(mysqli_error($connect));
-    }
-    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
         report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {

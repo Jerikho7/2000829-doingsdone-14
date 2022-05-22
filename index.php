@@ -17,9 +17,8 @@ $project_id = filter_input(INPUT_GET, 'id');
 
 $search = get_search_parameter($connect);
 $massage = '';
-$today = filter_input(INPUT_GET, 'today', FILTER_SANITIZE_SPECIAL_CHARS);
-$tomorrow = filter_input(INPUT_GET, 'tomorrow', FILTER_SANITIZE_SPECIAL_CHARS);
-$overdue = filter_input(INPUT_GET, 'overdue', FILTER_SANITIZE_SPECIAL_CHARS);
+$filter = filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_SPECIAL_CHARS);
+
 
 if ($search) {
 	$sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
@@ -43,8 +42,8 @@ if ($search) {
 	if (count($tasks) === 0) {
 		$massage = 'Ничего не найдено по вашему запросу';
 	}
-} elseif ($today || $tomorrow || $overdue) {
-	$tasks = filter($connect, $today, $tomorrow, $overdue, $user_id);
+} elseif ($filter) {
+	$tasks = filter($connect, $filter, $user_id);
 } else {
 	$tasks = tasks_db($connect, $project_id, $user_id);
 	if (count($tasks) === 0) {
@@ -78,9 +77,7 @@ $page_content = include_template(
 		'show_complete_tasks' => $show_complete_tasks,
 		'massage' => $massage,
 		'search' => $search,
-		'today' => $today,
-		'tomorrow' => $tomorrow,
-		'overdue' => $overdue,
+		'filter' => $filter,
 	]
 );
 
