@@ -2,9 +2,7 @@
 require_once('helpers.php');
 require_once('init.php');
 if (!isset($user_id)) {
-	$page_content = include_template('guest.php');
-	$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
-	print($layout_content);
+	header("Location: index.php");
 	exit();
 }
 
@@ -16,7 +14,6 @@ $projects_names = array_column($projects, 'name');
 $page_content = include_template('add_project.php', ['projects' => $projects]);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-	$required = ['name'];
 	$errors = [];
 	
 	$rules = [

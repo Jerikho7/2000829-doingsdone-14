@@ -34,7 +34,7 @@ if ($search) {
 	$tasks = tasks_db($connect, $project_id, $user_id);
 	if (count($tasks) === 0) {
 		report_error_404('в выбранной категории нет задач');
-	};	
+	}	
 }
 
 $page_content = include_template(

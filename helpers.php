@@ -214,10 +214,10 @@ function  change_status($connect, $user_id) {
     switch ($checked) {
 		case 0:
 			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
-		break;
+		    break;
 		case 1:
 			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
-		break;
+		    break;
 	}
 	$stmt = mysqli_prepare($connect, $sql);
 	if ($stmt === false) {
@@ -263,6 +263,8 @@ function filter ($connect, $filter, $user_id) {
     case 'overdue':
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
         break;
+    default:
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';
     }
     $stmt = mysqli_prepare($connect, $sql);
      if ($stmt === false) {
