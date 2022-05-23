@@ -264,7 +264,8 @@ function filter ($connect, $filter, $user_id) {
         $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
         break;
     default:
-        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE user_id = ?';
+        header("Location: index.php");
+        exit;
     }
     $stmt = mysqli_prepare($connect, $sql);
      if ($stmt === false) {
