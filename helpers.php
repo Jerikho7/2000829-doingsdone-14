@@ -43,6 +43,16 @@ function valid_projects($id, $allowed_list) {
     }
     return null;
 }
+//проверка имени проекта
+function valid_project_name($name, $allowed_list) {
+    if (empty($name)) {
+        return 'Это поле должно быть заполнено';
+    } 
+    if (in_array($name, $allowed_list)) {
+        return 'Проект с этим названием уже существует';
+    }
+    return null;
+}
 //проверка заполненности
 function required($name) {
     if (empty($name)) {
@@ -197,7 +207,82 @@ function  get_search_parameter($connect) {
     }
     return $search = trim($search);
 }
-
+//выполнено
+function  change_status($connect, $user_id) {
+    $task_id = filter_input(INPUT_GET, 'task_id', FILTER_SANITIZE_SPECIAL_CHARS);
+    $checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
+    switch ($checked) {
+		case 0:
+			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+		    break;
+		case 1:
+			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+		    break;
+	}
+	$stmt = mysqli_prepare($connect, $sql);
+	if ($stmt === false) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_bind_param($stmt, 'iii', $checked, $task_id, $user_id)) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_execute($stmt)) {
+		report_error(mysqli_error($connect));
+	}
+}
+//поиск
+function search ($connect, $user_id, $search) {
+    $sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
+		. 'FROM tasks t JOIN projects p on p.id = t.project_id '
+		. 'WHERE p.user_id = ? AND MATCH(t.name) AGAINST(?)';
+	$stmt = mysqli_prepare($connect, $sql);
+	if ($stmt === false) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_bind_param($stmt, 'is', $user_id, $search)) {
+		report_error(mysqli_error($connect));
+	}
+	if (!mysqli_stmt_execute($stmt)) {
+		report_error(mysqli_error($connect));
+	}
+	$result = mysqli_stmt_get_result($stmt);
+	if (!$result) {
+		report_error(mysqli_error($connect));
+	}
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+//фильтр
+function filter ($connect, $filter, $user_id) {
+    switch ($filter) {
+    case 'today':
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = CURDATE() AND user_id = ?';
+        break; 
+    case 'tomorrow':
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
+        break;
+    case 'overdue':
+        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
+        break;
+    default:
+        header("Location: index.php");
+        exit;
+    }
+    $stmt = mysqli_prepare($connect, $sql);
+     if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 //подключение к БД
 function db_connect ($db) 
 {
@@ -213,7 +298,7 @@ function db_connect ($db)
 function projects_db ($connect, $user) {
     $sql = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p '
 				. 'LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? '
-				. 'GROUP BY p.name ORDER BY p.name asc';
+				. 'GROUP BY p.id ORDER BY p.name asc';
     $stmt = mysqli_prepare($connect, $sql);
     if ($stmt === false) {
 	    report_error(mysqli_error($connect));

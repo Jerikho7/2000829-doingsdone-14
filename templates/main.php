@@ -5,7 +5,7 @@
         <ul class="main-navigation__list">
             <?php foreach ($projects as $project): ?>
                 <li class="main-navigation__list-item <?php if ($project['id'] == $project_id): ?>main-navigation__list-item--active<?php endif; ?>">
-                    <a class="main-navigation__list-item-link" href="index.php?id=<?= $project['id']; ?>"><?= htmlspecialchars($project['name']); ?></a>
+                    <a class="main-navigation__list-item-link" href="index.php?project_id=<?= $project['id']; ?>"><?= htmlspecialchars($project['name']); ?></a>
                     <span class="main-navigation__list-item-count"><?= $project['task_count']; ?></span>
                 </li>
             <?php endforeach; ?>
@@ -13,7 +13,7 @@
     </nav>
 
     <a class="button button--transparent button--plus content__side-button"
-       href="pages/form-project.html" target="project_add">Добавить проект</a>
+       href="add_project.php" target="project_add">Добавить проект</a>
 </section>
 
 <main class="content__main">
@@ -27,25 +27,25 @@
 
             <div class="tasks-controls">
                 <nav class="tasks-switch">
-                    <a href="/" class="tasks-switch__item tasks-switch__item--active">Все задачи</a>
-                    <a href="/" class="tasks-switch__item">Повестка дня</a>
-                    <a href="/" class="tasks-switch__item">Завтра</a>
-                    <a href="/" class="tasks-switch__item">Просроченные</a>
+                    <a href="index.php" class="tasks-switch__item <?php  if (empty($filter)) : ?>tasks-switch__item--active<?php endif; ?>">Все задачи</a>
+                    <a href="index.php?filter=today" class="tasks-switch__item <?php  if ($filter == 'today') : ?>tasks-switch__item--active<?php endif; ?>">Повестка дня</a>
+                    <a href="index.php?filter=tomorrow" class="tasks-switch__item <?php  if ($filter == 'tomorrow') : ?>tasks-switch__item--active<?php endif; ?>">Завтра</a>
+                    <a href="index.php?filter=overdue" class="tasks-switch__item <?php  if ($filter == 'overdue') : ?>tasks-switch__item--active<?php endif; ?>">Просроченные</a>
                 </nav>
 
                 <label class="checkbox">
-                    <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php  if ($show_complete_tasks === 1): ?>checked<?php endif; ?>>
+                    <input class="checkbox__input visually-hidden show_completed" type="checkbox" <?php  if ($show_complete_tasks) : ?>checked<?php endif; ?>>
                     <span class="checkbox__text">Показывать выполненные</span>
                 </label>
             </div>
 
             <table class="tasks">
                 <?php foreach ($tasks as $task): ?>
-                <?php if ($task['status'] and $show_complete_tasks === 0): continue; endif; ?>
+                <?php if ($task['status'] and !$show_complete_tasks): continue; endif; ?>
                 <tr class="tasks__item task <?php if ($task['status']): ?>task--completed<?php endif ?> <?php if (task_deadline($task['deadline_at'])): ?>task--important<?php endif ?>">
                     <td class="task__select">
                         <label class="checkbox task__checkbox">
-                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" <?php if ($task['status']): ?>checked<?php endif; ?>>
+                            <input class="checkbox__input visually-hidden task__checkbox" type="checkbox" value="<?= $task['id']; ?>" <?php if ($task['status']): ?>checked<?php endif; ?>>
                             <span class="checkbox__text"><?= htmlspecialchars($task['name']); ?></span>
                         </label>
                     </td>
