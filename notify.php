@@ -19,9 +19,9 @@ foreach ($users as $user) {
     $user_id = $user['id'];
     $tasks = get_deadline_tasks($connect, $user_id);
     $tasks_names = array_column($tasks, 'name');
-    $task_count = count($tasks_names);
+   
     if (!empty($tasks)) {
-    
+        $task_count = count($tasks_names);
         $all_tasks = implode(', ', $tasks_names);
         $plan = get_noun_plural_form($task_count, 'запланирована', 'запланированы', 'запланированы');
         $task = get_noun_plural_form($task_count, 'задача', 'задачи', 'задачи');
