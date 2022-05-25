@@ -356,7 +356,7 @@ function tasks_db ($connect, $project_id, $user_id) {
 	return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
 //подключение задача с deadline
-function get_deadline_tasks ($connect, $user_id) {
+/*function get_deadline_tasks ($connect, $user_id) {
     $sql = 'SELECT name FROM tasks WHERE status = 0 AND deadline_at = CURDATE() AND user_id = ?';
     $stmt = mysqli_prepare($connect, $sql);
     if ($stmt === false) {
@@ -373,6 +373,18 @@ function get_deadline_tasks ($connect, $user_id) {
 	    report_error(mysqli_error($connect));
     }
 	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+*/
+function get_deadline_tasks ($connect) {
+    $sql = 'SELECT u.id, u.name as user_name, email, t.name as task_name '
+            . 'FROM users u '
+            . 'JOIN tasks t on u.id = t.user_id '
+            . 'WHERE status = 0 AND deadline_at = CURDATE()';
+    $result = mysqli_query($connect, $sql);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 //подключение ошибки
 function report_error($error)

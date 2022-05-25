@@ -8,35 +8,24 @@ use Symfony\Component\Mime\Email;
 
 require 'vendor/autoload.php';
 
-$dsn = 'smtp://water-lily77:gCJ1tzwqFb6T8vc2Wakb@smtp.mail.ru:465';
-$transport = Transport::fromDsn($dsn);
+$transport = Transport::fromDsn('smtp://dd8ecd6ba862b6:c67ceaa24b2e1a@smtp.mailtrap.io:2525');
 
-$users = users_db($connect);
+$mailer = new Mailer($transport);
 
-foreach ($users as $user) {
-    $date = date('d-m-Y');
-    $user_id = $user['id'];
-    $tasks = get_deadline_tasks($connect, $user_id);
-    $tasks_names = array_column($tasks, 'name');
-    $task_count = count($tasks_names);
-    if ($task_count === 0) {
-        exit;
-    } else {
-        $all_tasks = implode(', ', $tasks_names);
-        $plan = get_noun_plural_form($task_count, 'запланирована', 'запланированы', 'запланированы');
-        $task = get_noun_plural_form($task_count, 'задача', 'задачи', 'задачи');
-    
+$users_tasks = get_deadline_tasks($connect);
+$date = date('d-m-Y');
+if (isset($users_tasks)) {
+    foreach ($users_tasks as $key => $value) {
         $message = new Email();
-        $message->to($user['email']);
+        $message->to($value['email']);
         $message->from("keks@phpdemo.ru");
         $message->subject("Уведомление от сервиса «Дела в порядке»");
-        $message->text("Уважаемый(ая), ${user['name']}. У вас $plan $task $all_tasks на $date.");
-    
-        $mailer = new Mailer($transport);
-        if (!$mailer->send($message)) {
-            echo "Couldn't send email";
-        } else {
-            echo "Сообщение отправлено";
-        }
+        $message->text("Уважаемый(ая), ${value['user_name']}. У вас запланирована задача ${value['task_name']} на $date.");
+    }
+    if ($mailer->send($message)) {
+        echo "Сообщение отправлено ${value['email']}";
+    } else {
+        echo "Сообщение не отправлено!";
     }
 }
+
