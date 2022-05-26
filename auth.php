@@ -53,7 +53,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 		report_error(mysqli_error($connect));
 	} 
 	$user = mysqli_fetch_array($result, MYSQLI_ASSOC);
-
 	
 	if (empty($user) || !password_verify($auth['password'], $user['password'])) {
 		$errors['email'] = '';

@@ -294,6 +294,15 @@ function db_connect ($db)
     mysqli_set_charset($link, 'utf8');
     return $link; 
 }
+//подключение списка пользователей
+function users_db ($connect) {
+    $sql = 'SELECT id, email, name FROM users';
+    $result = mysqli_query($connect, $sql);
+    if (!$result) {
+	    report_error(mysqli_error($connect));
+    }
+	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 //подключение проектов
 function projects_db ($connect, $user) {
     $sql = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p '
@@ -346,15 +355,26 @@ function tasks_db ($connect, $project_id, $user_id) {
     }
 	return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
-//подключение списка пользователей
-function users_db ($connect) {
-    $sql = 'SELECT id, email FROM users';
-    $result = mysqli_query($connect, $sql);
+//подключение задача с deadline
+function get_deadline_tasks ($connect, $user_id) {
+    $sql = 'SELECT name FROM tasks WHERE status = 0 AND deadline_at = CURDATE() AND user_id = ?';
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
+	    report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
+	    report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+	    report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
 	    report_error(mysqli_error($connect));
     }
 	return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
+
 //подключение ошибки
 function report_error($error)
 {

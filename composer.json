@@ -1,0 +1,20 @@
+{
+    "name": "osipova/2000829-doingsdone-14",
+    "description": "Task manager",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Osipova\\2000829Doingsdone14\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Evgeniya",
+            "email": "osipova.dr17@yandex.ru"
+        }
+    ],
+    "require": {
+        "symfony/mailer": "^6.0"
+    }
+}

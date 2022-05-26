@@ -22,7 +22,6 @@ $search = get_search_parameter($connect);
 $massage = '';
 $filter = filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_SPECIAL_CHARS);
 
-
 if ($search) {
 	$tasks = search($connect, $user_id, $search);
 	if (count($tasks) === 0) {
