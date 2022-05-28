@@ -20,7 +20,7 @@
             </a>
 
             <div class="main-header__side">
-                <?php if (isset($_SESSION['user'])): ?>   
+                <?php if (isset($_SESSION['user'])): ?>
                 <a class="main-header__side-item button button--plus open-modal" href="add.php">Добавить задачу</a>
 
                 <div class="main-header__side-item user-menu">

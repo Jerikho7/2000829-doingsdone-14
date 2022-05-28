@@ -60,5 +60,5 @@
                 <?php if (count($tasks) === 0) : ?>
                     <span class=""><?= $massage; ?></span>
                 <?php endif ?>
-            </table>    
+            </table>
 </main>
