@@ -31,7 +31,7 @@
     <div class="form__row">
       <label class="form__label" for="project">Проект <sup>*</sup></label>
       <?php $classname = isset($errors['project_id']) ? "form__input--error" : ""; ?>
-            
+
       <select class="form__input form__input--select <?= $classname; ?>" name="project_id" id="project">
         <option value="">Выберите категорию</option>
         <?php foreach ($projects as $project): ?>
@@ -61,7 +61,7 @@
         </label>
       </div>
     </div>
-          
+
     <div class="form__row form__row--controls">
       <input class="button" type="submit" name="" value="Добавить">
     </div>

@@ -10,7 +10,7 @@
           <form class="form" action="register.php" method="post" autocomplete="off">
             <div class="form__row">
               <label class="form__label" for="email">E-mail <sup>*</sup></label>
-              <?php $classname = isset($errors['email']) ? "form__input--error" : ""; ?>             
+              <?php $classname = isset($errors['email']) ? "form__input--error" : ""; ?>
               <input class="form__input <?= $classname; ?>" type="text" name="email" id="email" value="<?= get_post_val('email'); ?>" placeholder="Введите e-mail">
               <?php if (isset($errors['email'])): ?><p class="form__message"><?= $errors['email']; ?></p><?php endif; ?>
             </div>

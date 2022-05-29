@@ -1,12 +1,13 @@
 <?php
+
 require_once('helpers.php');
 require_once('init.php');
 
 if (!isset($user_id)) {
-	$page_content = include_template('guest.php');
-	$layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
-	print($layout_content);
-	exit();
+    $page_content = include_template('guest.php');
+    $layout_content = include_template('layout.php', ['content' => $page_content, 'title' => 'Дела в порядке',]);
+    print($layout_content);
+    exit();
 }
 
 $projects = [];
@@ -23,39 +24,39 @@ $massage = '';
 $filter = filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_SPECIAL_CHARS);
 
 if ($search) {
-	$tasks = search($connect, $user_id, $search);
-	if (count($tasks) === 0) {
-		$massage = 'Ничего не найдено по вашему запросу';
-	}
+    $tasks = search($connect, $user_id, $search);
+    if (count($tasks) === 0) {
+        $massage = 'Ничего не найдено по вашему запросу';
+    }
 } elseif ($filter) {
-	$tasks = filter($connect, $filter, $user_id);
+    $tasks = filter($connect, $filter, $user_id);
 } else {
-	$tasks = tasks_db($connect, $project_id, $user_id);
-	if (count($tasks) === 0) {
-		report_error_404('в выбранной категории нет задач');
-	}	
+    $tasks = tasks_db($connect, $project_id, $user_id);
+    if (count($tasks) === 0) {
+        report_error_404('в выбранной категории нет задач');
+    }
 }
 
 $page_content = include_template(
-	'main.php',
-	[
-		'projects' => $projects,
-		'project_id' => $project_id,
-		'tasks' => $tasks,
-		'show_complete_tasks' => $show_complete_tasks,
-		'massage' => $massage,
-		'search' => $search,
-		'filter' => $filter,
-	]
+    'main.php',
+    [
+        'projects' => $projects,
+        'project_id' => $project_id,
+        'tasks' => $tasks,
+        'show_complete_tasks' => $show_complete_tasks,
+        'massage' => $massage,
+        'search' => $search,
+        'filter' => $filter,
+    ]
 );
 
 $layout_content = include_template(
-	'layout.php',
-	[
-		'content' => $page_content,
-		'title' => 'Дела в порядке',
-		'user' => $user_name,
-	]
+    'layout.php',
+    [
+        'content' => $page_content,
+        'title' => 'Дела в порядке',
+        'user' => $user_name,
+    ]
 );
 
 print($layout_content);

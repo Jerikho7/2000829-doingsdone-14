@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Проверяет переданную дату на соответствие формату 'ГГГГ-ММ-ДД'
  *
@@ -13,15 +14,26 @@
  *
  * @return bool true при совпадении с форматом 'ГГГГ-ММ-ДД', иначе false
  */
-function is_date_valid($date) {
+function is_date_valid($date)
+{
     if (is_null($date)) {
         return true;
     }
     $format_to_check = 'Y-m-d';
     $dateTimeObj = date_create_from_format($format_to_check, $date);
-    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;   
+    return $dateTimeObj !== false && array_sum(date_get_last_errors()) === 0;
 }
-function valid_date($date) {
+
+/**
+ * Проверяет валидность введенной даты в форме
+ * Отсутствие пустой формы и даты не позднее текущей
+ *
+ * @param string $date Дата в виде строки
+ *
+ * @return null при корректной введенной дате, иначе вывод ошибки
+ */
+function valid_date($date)
+{
     if (is_null($date)) {
         return null;
     }
@@ -31,52 +43,98 @@ function valid_date($date) {
     if ($date < date('Y-m-d')) {
         return 'Дата выполнения задачи не должна быть позднее текущего дня';
     }
-    return null;	
+    return null;
 }
-//проверка выбранного проекта на существование в категории
-function valid_projects($id, $allowed_list) {
+
+/**
+ * Проверка выбранного проекта на существование в категории
+ *
+ * @param int $id id проекта
+ * @param array $allowed_list массив со списком проектов пользователя
+ *
+ * @return null при корректной введенном проекте, иначе вывод ошибки
+ */
+function valid_projects($id, $allowed_list)
+{
     if (empty($id)) {
         return 'Это поле должно быть заполнено';
-    } 
+    }
     if (!in_array($id, $allowed_list)) {
         return 'Проект не найден';
     }
     return null;
 }
-//проверка имени проекта
-function valid_project_name($name, $allowed_list) {
+
+/**
+ * Проверка имени проекта
+ *
+ * @param string $name введенное имя
+ * @param array $allowed_list массив с именами проектов пользователя
+ *
+ * @return null при корректной введенном имени, иначе вывод ошибки
+ */
+function valid_project_name($name, $allowed_list)
+{
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
-    } 
+    }
     if (in_array($name, $allowed_list)) {
         return 'Проект с этим названием уже существует';
     }
     return null;
 }
-//проверка заполненности
-function required($name) {
+
+/**
+ * Проверка заполненности формы
+ *
+ * @param string $name введенное имя
+ *
+ * @return null при корректно заполненной форме, иначе вывод ошибки
+ */
+function required($name)
+{
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
-    } 
+    }
     return null;
 }
-//проверкка email
-function valid_email($email, $allowed_list) {
+
+/**
+ * Проверка email
+ *
+ * @param string $email введенный email
+ * @param array $allowed_list массив с email пользователей
+ *
+ * @return null при корректной введенном email, иначе вывод ошибки
+ */
+function valid_email($email, $allowed_list)
+{
     if (empty($email)) {
-        return 'Это поле должно быть заполнено';  
+        return 'Это поле должно быть заполнено';
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return 'Email должен быть корректным';
     }
-    if (in_array($email, $allowed_list)){
+    if (in_array($email, $allowed_list)) {
         return 'Пользователь с этим email уже зарегистрирован';
     }
     return null;
 }
-//проверка длины 
-function valid_lenght($value, $min, $max) {
+
+/**
+ * Проверка длины введеной строки с минимально и максимально допустимым количеством символов
+ *
+ * @param string $value введенная строка
+ * @param int $min минимальное значение
+ * @param int $max максимальное значение
+ *
+ * @return null при корректной введенной длины строки, иначе вывод ошибки
+ */
+
+function valid_lenght($value, $min, $max)
+{
     if (empty($value)) {
-        return 'Это поле должно быть заполнено';  
+        return 'Это поле должно быть заполнено';
     }
     $lenght = strlen($value);
     if ($lenght < $min || $lenght > $max) {
@@ -84,10 +142,19 @@ function valid_lenght($value, $min, $max) {
     }
     return null;
 }
-//проверка email на входе
-function valid_auth_email($email) {
+
+/**
+ * Проверка email на входе
+ *
+ * @param string $email введенная строка
+ *
+ * @return null при корректной введенном email, иначе вывод ошибки
+ */
+
+function valid_auth_email($email)
+{
     if (empty($email)) {
-        return 'Это поле должно быть заполнено';  
+        return 'Это поле должно быть заполнено';
     }
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         return 'Email должен быть корректным';
@@ -95,8 +162,36 @@ function valid_auth_email($email) {
     return null;
 }
 
-function get_post_val($name) {
+/**
+ * Сохранние значения полей формы после валидации
+ *
+ * @param string $name данные заполненной формы
+ *
+ * @return string значение формы
+ */
+function get_post_val($name)
+{
     return filter_input(INPUT_POST, $name);
+}
+
+/**
+ * Отправление данных обратно в базу данных для исполнени или вывод ошибки
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param $sql string SQL запрос с плейсхолдерами вместо значений
+ * @param string $value Данные для вставки на место плейсхолдеров
+ *
+ * @return mysqli_stmt подготовленное выражение, иначе вывод ошибки
+ */
+function execute_or_error($connect, $sql, $value)
+{
+    $stmt = db_get_prepare_stmt($connect, $sql, $value);
+    if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
 }
 
 /**
@@ -108,7 +203,8 @@ function get_post_val($name) {
  *
  * @return mysqli_stmt Подготовленное выражение
  */
-function db_get_prepare_stmt($link, $sql, $data = []) {
+function db_get_prepare_stmt($link, $sql, $data = [])
+{
     $stmt = mysqli_prepare($link, $sql);
 
     if ($stmt === false) {
@@ -125,11 +221,9 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
 
             if (is_int($value)) {
                 $type = 'i';
-            }
-            else if (is_string($value)) {
+            } elseif (is_string($value)) {
                 $type = 's';
-            }
-            else if (is_double($value)) {
+            } elseif (is_double($value)) {
                 $type = 'd';
             }
 
@@ -175,7 +269,7 @@ function db_get_prepare_stmt($link, $sql, $data = []) {
  *
  * @return string Рассчитанная форма множественнго числа
  */
-function get_noun_plural_form (int $number, string $one, string $two, string $many): string
+function get_noun_plural_form(int $number, string $one, string $two, string $many): string
 {
     $number = (int) $number;
     $mod10 = $number % 10;
@@ -199,76 +293,114 @@ function get_noun_plural_form (int $number, string $one, string $two, string $ma
     }
 }
 
-//получение запроса на поиск
-function  get_search_parameter($connect) {
+/**
+ * Получение запроса на выполнение поиска
+ *
+ * @param $connect mysqli Ресурс соединения
+ *
+ * @return string $search значение введеное в форму
+ */
+
+function get_search_parameter($connect)
+{
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
         return null;
     }
     return $search = trim($search);
 }
-//выполнено
-function  change_status($connect, $user_id) {
+
+/**
+ * Изменение статуса задачи у пользователя SQL-запроса
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param int $user_id id пользователя
+ *
+ */
+function change_status($connect, $user_id)
+{
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_SANITIZE_SPECIAL_CHARS);
     $checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
     switch ($checked) {
-		case 0:
-			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
-		    break;
-		case 1:
-			$sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
-		    break;
-	}
-	$stmt = mysqli_prepare($connect, $sql);
-	if ($stmt === false) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_bind_param($stmt, 'iii', $checked, $task_id, $user_id)) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_execute($stmt)) {
-		report_error(mysqli_error($connect));
-	}
-}
-//поиск
-function search ($connect, $user_id, $search) {
-    $sql = 'SELECT t.id, status, t.name, file, deadline_at, p.id '
-		. 'FROM tasks t JOIN projects p on p.id = t.project_id '
-		. 'WHERE p.user_id = ? AND MATCH(t.name) AGAINST(?)';
-	$stmt = mysqli_prepare($connect, $sql);
-	if ($stmt === false) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_bind_param($stmt, 'is', $user_id, $search)) {
-		report_error(mysqli_error($connect));
-	}
-	if (!mysqli_stmt_execute($stmt)) {
-		report_error(mysqli_error($connect));
-	}
-	$result = mysqli_stmt_get_result($stmt);
-	if (!$result) {
-		report_error(mysqli_error($connect));
-	}
-    return mysqli_fetch_all($result, MYSQLI_ASSOC);
-}
-//фильтр
-function filter ($connect, $filter, $user_id) {
-    switch ($filter) {
-    case 'today':
-        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = CURDATE() AND user_id = ?';
-        break; 
-    case 'tomorrow':
-        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
-        break;
-    case 'overdue':
-        $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
-        break;
-    default:
-        header("Location: index.php");
-        exit;
+        case 0:
+            $sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+            break;
+        case 1:
+            $sql = 'UPDATE tasks SET status = ? WHERE id = ? AND user_id = ?';
+            break;
     }
     $stmt = mysqli_prepare($connect, $sql);
-     if ($stmt === false) {
+    if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'iii', $checked, $task_id, $user_id)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+}
+
+/**
+ * Выполнение посика на основе SQL-запроса
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param int $user_id id пользователя
+ * @param string $search полученное значение
+ *
+ * @return array $search результат поиска в виде массива
+ */
+function search($connect, $user_id, $search)
+{
+    $sql = <<<'EOT'
+    SELECT t.id, status, t.name, file, deadline_at, p.id
+    FROM tasks t JOIN projects p on p.id = t.project_id
+    WHERE p.user_id = ? AND MATCH(t.name) AGAINST(?)
+    EOT;
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_bind_param($stmt, 'is', $user_id, $search)) {
+        report_error(mysqli_error($connect));
+    }
+    if (!mysqli_stmt_execute($stmt)) {
+        report_error(mysqli_error($connect));
+    }
+    $result = mysqli_stmt_get_result($stmt);
+    if (!$result) {
+        report_error(mysqli_error($connect));
+    }
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
+
+/**
+ * Выполнение фильтрации на основе SQL-запроса
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param string $filter полученное значение
+ * @param int $user_id id пользователя
+ *
+ * @return array $filter результат поиска в виде массива
+ */
+function filter($connect, $filter, $user_id)
+{
+    switch ($filter) {
+        case 'today':
+            $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = CURDATE() AND user_id = ?';
+            break;
+        case 'tomorrow':
+            $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at = DATE_ADD(CURDATE(), INTERVAL 1 DAY) AND user_id = ?';
+            break;
+        case 'overdue':
+            $sql = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks WHERE deadline_at < CURDATE() AND user_id = ?';
+            break;
+        default:
+            header('Location: index.php');
+            exit;
+    }
+    $stmt = mysqli_prepare($connect, $sql);
+    if ($stmt === false) {
         report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
@@ -283,52 +415,90 @@ function filter ($connect, $filter, $user_id) {
     }
     return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
-//подключение к БД
-function db_connect ($db) 
+
+/**
+ * Подключение к БД
+ *
+ * @param array $db массив с данным для подключения к БД
+ *
+ * @return $link соединение
+ */
+function db_connect($db)
 {
     $link = mysqli_connect($db['host'], $db['user'], $db['password'], $db['database']);
-   
+
     if (!$link) {
         return false;
     }
     mysqli_set_charset($link, 'utf8');
-    return $link; 
+    return $link;
 }
-//подключение списка пользователей
-function users_db ($connect) {
+
+/**
+ * Получение списка пользователей
+ *
+ * @param $connect mysqli Ресурс соединения
+ *
+ * @return array массив списка пользователей
+ */
+function users_db($connect)
+{
     $sql = 'SELECT id, email, name FROM users';
     $result = mysqli_query($connect, $sql);
     if (!$result) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
-	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
-//подключение проектов
-function projects_db ($connect, $user) {
-    $sql = 'SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p '
-				. 'LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ? '
-				. 'GROUP BY p.id ORDER BY p.name asc';
+
+/**
+ * Получение проектов данного пользователя
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param int $user id пользователя
+ *
+ * @return array массив списка проектов
+ */
+function projects_db($connect, $user)
+{
+    $sql = <<<'EOT'
+    SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p
+    LEFT JOIN tasks t ON p.id = t.project_id WHERE p.user_id = ?
+    GROUP BY p.id ORDER BY p.name asc
+    EOT;
     $stmt = mysqli_prepare($connect, $sql);
     if ($stmt === false) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_bind_param($stmt, 'i', $user)) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_execute($stmt)) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
-	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
-//подключение задач 
-function tasks_db ($connect, $project_id, $user_id) {
+
+/**
+ * Получение и подсчет задач в каждом проекте у данного пользователя
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param int $user_id id пользователя
+ * @param int $project_id id проекта
+ *
+ * @return array массив списка проектов
+ */
+function tasks_db($connect, $project_id, $user_id)
+{
     if ($project_id) {
-        $sql_tasks = 'SELECT id, status, name, deadline_at, file, project_id FROM tasks '
-                    . 'WHERE user_id = ? AND project_id = ?';
+        $sql_tasks = <<<'EOT'
+        SELECT id, status, name, deadline_at, file, project_id FROM tasks
+        WHERE user_id = ? AND project_id = ?
+        EOT;
         $stmt = mysqli_prepare($connect, $sql_tasks);
         if ($stmt === false) {
             report_error(mysqli_error($connect));
@@ -353,33 +523,48 @@ function tasks_db ($connect, $project_id, $user_id) {
     if (!$res) {
         report_error(mysqli_error($connect));
     }
-	return mysqli_fetch_all($res, MYSQLI_ASSOC);
+    return mysqli_fetch_all($res, MYSQLI_ASSOC);
 }
-//подключение задача с deadline
-function get_deadline_tasks ($connect, $user_id) {
+
+/**
+ * Получение задача с deadline у данного пользователя
+ *
+ * @param $connect mysqli Ресурс соединения
+ * @param int $user_id id пользователя
+ *
+ * @return array массив списка проектов
+ */
+function get_deadline_tasks($connect, $user_id)
+{
     $sql = 'SELECT name FROM tasks WHERE status = 0 AND deadline_at = CURDATE() AND user_id = ?';
     $stmt = mysqli_prepare($connect, $sql);
     if ($stmt === false) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_bind_param($stmt, 'i', $user_id)) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
     if (!mysqli_stmt_execute($stmt)) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
     $result = mysqli_stmt_get_result($stmt);
     if (!$result) {
-	    report_error(mysqli_error($connect));
+        report_error(mysqli_error($connect));
     }
-	return mysqli_fetch_all($result, MYSQLI_ASSOC);
+    return mysqli_fetch_all($result, MYSQLI_ASSOC);
 }
 
-//подключение ошибки
+/**
+ * Подключние ошибки
+ *
+ * @param string $error
+ *
+ * @return сообщение об ошибке
+ */
 function report_error($error)
 {
     $page_content = include_template('error.php', ['error' => $error]);
-    
+
     print include_template('layout.php', [
         'content' => $page_content,
         'title' => 'Дела в порядке',
@@ -387,11 +572,18 @@ function report_error($error)
     ]);
     exit;
 }
-//подключение ошибки 404
+
+/**
+ * Подключние ошибки 404
+ *
+ * @param string $error
+ *
+ * @return сообщение об ошибке
+ */
 function report_error_404($error_404)
 {
     $page_content = include_template('error_404.php', ['error_404' => $error_404]);
-    
+
     print include_template('layout.php', [
         'content' => $page_content,
         'title' => 'Дела в порядке',
@@ -400,16 +592,22 @@ function report_error_404($error_404)
     exit;
 }
 
-//определение дедлайна
+/**
+ * Опрделение является ли дата меньше 24 часов
+ *
+ * @param int $date дата
+ *
+ * @return array массив списка проектов
+ */
 function task_deadline($date)
 {
-	if ($date === null) {
-		return false;
-	}
-	$cur_date = strtotime(date('d-m-Y'));
-	$date_task = strtotime($date);
-	$hours_count = abs(floor(($cur_date - $date_task) / 3600));
-	return $hours_count < 24;
+    if ($date === null) {
+        return false;
+    }
+    $cur_date = strtotime(date('d-m-Y'));
+    $date_task = strtotime($date);
+    $hours_count = abs(floor(($cur_date - $date_task) / 3600));
+    return $hours_count < 24;
 }
 
 /**
@@ -418,7 +616,8 @@ function task_deadline($date)
  * @param array $data Ассоциативный массив с данными для шаблона
  * @return string Итоговый HTML
  */
-function include_template($name, array $data = []) {
+function include_template($name, array $data = [])
+{
     $name = 'templates/' . $name;
     $result = '';
 
