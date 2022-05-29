@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = password_hash($register['password'], PASSWORD_DEFAULT);
         $register['password'] = $password;
         $sql = 'INSERT INTO users (created_at, email, name, password) VALUES (NOW(), ?, ?, ?)';
-        $stmt = execute_or_error($connect, $sql, $register);
+        execute_or_error($connect, $sql, $register);
         header('Location: index.php');
     }
 }

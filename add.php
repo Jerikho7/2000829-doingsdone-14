@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
     } else {
         $sql = 'INSERT INTO tasks (created_at, name, project_id, deadline_at, user_id, file) VALUES (NOW(), ?, ?, ?, ?, ?)';
-        $stmt = execute_or_error($connect, $sql, $task);
+        execute_or_error($connect, $sql, $task);
         header('Location: index.php');
     }
 }

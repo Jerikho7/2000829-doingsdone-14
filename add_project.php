@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
     } else {
         $sql = 'INSERT INTO projects (name, user_id) VALUES (?, ?)';
-        $stmt = execute_or_error($connect, $sql, $project);
+        execute_or_error($connect, $sql, $project);
         header('Location: index.php');
     }
 }
