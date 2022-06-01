@@ -298,7 +298,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  *
  * @return string значение введеное в форму
  */
-function get_search_parameter() : string
+function get_search_parameter() : ? string
 {
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
