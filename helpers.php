@@ -296,12 +296,9 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
 /**
  * Получение запроса на выполнение поиска
  *
- * @param $connect mysqli Ресурс соединения
- *
- * @return string $search значение введеное в форму
+ * @return string значение введеное в форму
  */
-
-function get_search_parameter()
+function get_search_parameter() : string
 {
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
@@ -349,7 +346,7 @@ function change_status($connect, $user_id) : void
  * @param int $user_id id пользователя
  * @param string $search полученное значение
  *
- * @return array $search результат поиска в виде массива
+ * @return array результат поиска в виде массива
  */
 function search($connect, $user_id, $search)
 {
@@ -382,7 +379,7 @@ function search($connect, $user_id, $search)
  * @param string $filter полученное значение
  * @param int $user_id id пользователя
  *
- * @return array $filter результат поиска в виде массива
+ * @return array результат поиска в виде массива
  */
 function filter($connect, $filter, $user_id)
 {
@@ -560,9 +557,9 @@ function get_deadline_tasks($connect, $user_id)
  *
  * @param string $error
  *
- * @return string сообщение об ошибке
+ * @return void
  */
-function report_error($error)
+function report_error($error) : void
 {
     $page_content = include_template('error.php', ['error' => $error]);
 
@@ -579,9 +576,9 @@ function report_error($error)
  *
  * @param string $error
  *
- * @return string сообщение об ошибке
+ * @return void
  */
-function report_error_404($error_404)
+function report_error_404($error_404) : void
 {
     $page_content = include_template('error_404.php', ['error_404' => $error_404]);
 
