@@ -32,7 +32,7 @@ function is_date_valid($date)
  *
  * @return null при корректной введенной дате, иначе вывод ошибки
  */
-function valid_date($date)
+function valid_date($date) : ? string
 {
     if (is_null($date)) {
         return null;
@@ -54,7 +54,7 @@ function valid_date($date)
  *
  * @return null при корректной введенном проекте, иначе вывод ошибки
  */
-function valid_projects($id, $allowed_list)
+function valid_projects($id, $allowed_list) : ? string
 {
     if (empty($id)) {
         return 'Это поле должно быть заполнено';
@@ -73,7 +73,7 @@ function valid_projects($id, $allowed_list)
  *
  * @return null при корректной введенном имени, иначе вывод ошибки
  */
-function valid_project_name($name, $allowed_list)
+function valid_project_name($name, $allowed_list) : ? string
 {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
@@ -91,7 +91,7 @@ function valid_project_name($name, $allowed_list)
  *
  * @return null при корректно заполненной форме, иначе вывод ошибки
  */
-function required($name)
+function required($name) : ? string
 {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
@@ -107,7 +107,7 @@ function required($name)
  *
  * @return null при корректной введенном email, иначе вывод ошибки
  */
-function valid_email($email, $allowed_list)
+function valid_email($email, $allowed_list) : ? string
 {
     if (empty($email)) {
         return 'Это поле должно быть заполнено';
@@ -131,7 +131,7 @@ function valid_email($email, $allowed_list)
  * @return null при корректной введенной длины строки, иначе вывод ошибки
  */
 
-function valid_lenght($value, $min, $max)
+function valid_lenght($value, $min, $max) : ? string
 {
     if (empty($value)) {
         return 'Это поле должно быть заполнено';
@@ -151,7 +151,7 @@ function valid_lenght($value, $min, $max)
  * @return null при корректной введенном email, иначе вывод ошибки
  */
 
-function valid_auth_email($email)
+function valid_auth_email($email) : ? string
 {
     if (empty($email)) {
         return 'Это поле должно быть заполнено';
@@ -169,7 +169,7 @@ function valid_auth_email($email)
  *
  * @return string значение формы
  */
-function get_post_val($name)
+function get_post_val($name) : string
 {
     return filter_input(INPUT_POST, $name);
 }
@@ -348,7 +348,7 @@ function change_status($connect, $user_id) : void
  *
  * @return array результат поиска в виде массива
  */
-function search($connect, $user_id, $search)
+function search($connect, $user_id, $search) : array
 {
     $sql = <<<'EOT'
     SELECT t.id, status, t.name, file, deadline_at, p.id
@@ -381,7 +381,7 @@ function search($connect, $user_id, $search)
  *
  * @return array результат поиска в виде массива
  */
-function filter($connect, $filter, $user_id)
+function filter($connect, $filter, $user_id) : array
 {
     switch ($filter) {
         case 'today':
@@ -439,7 +439,7 @@ function db_connect($db)
  *
  * @return array массив списка пользователей
  */
-function users_db($connect)
+function users_db($connect) : array
 {
     $sql = 'SELECT id, email, name FROM users';
     $result = mysqli_query($connect, $sql);
@@ -457,7 +457,7 @@ function users_db($connect)
  *
  * @return array массив списка проектов
  */
-function projects_db($connect, $user)
+function projects_db($connect, $user) : array
 {
     $sql = <<<'EOT'
     SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p
@@ -490,7 +490,7 @@ function projects_db($connect, $user)
  *
  * @return array массив списка проектов
  */
-function tasks_db($connect, $project_id, $user_id)
+function tasks_db($connect, $project_id, $user_id) : array
 {
     if ($project_id) {
         $sql_tasks = <<<'EOT'
@@ -532,7 +532,7 @@ function tasks_db($connect, $project_id, $user_id)
  *
  * @return array массив списка проектов
  */
-function get_deadline_tasks($connect, $user_id)
+function get_deadline_tasks($connect, $user_id) : array
 {
     $sql = 'SELECT name FROM tasks WHERE status = 0 AND deadline_at = CURDATE() AND user_id = ?';
     $stmt = mysqli_prepare($connect, $sql);
@@ -597,7 +597,7 @@ function report_error_404($error_404) : void
  *
  * @return array массив списка проектов
  */
-function task_deadline($date)
+function task_deadline($date) : array
 {
     if ($date === null) {
         return false;
