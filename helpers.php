@@ -30,7 +30,7 @@ function is_date_valid($date)
  *
  * @param string $date Дата в виде строки
  */
-function valid_date($date): ? string
+function valid_date($date): ?string
 {
     if (is_null($date)) {
         return null;
@@ -50,7 +50,7 @@ function valid_date($date): ? string
  * @param int $id id проекта
  * @param array $allowed_list массив со списком проектов пользователя
  */
-function valid_projects($id, $allowed_list): ? string
+function valid_projects($id, $allowed_list): ?string
 {
     if (empty($id)) {
         return 'Это поле должно быть заполнено';
@@ -67,7 +67,7 @@ function valid_projects($id, $allowed_list): ? string
  * @param string $name введенное имя
  * @param array $allowed_list массив с именами проектов пользователя
  */
-function valid_project_name($name, $allowed_list): ? string
+function valid_project_name($name, $allowed_list): ?string
 {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
@@ -83,7 +83,7 @@ function valid_project_name($name, $allowed_list): ? string
  *
  * @param string $name введенное имя
  */
-function required($name): ? string
+function required($name): ?string
 {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
@@ -97,7 +97,7 @@ function required($name): ? string
  * @param string $email введенный email
  * @param array $allowed_list массив с email пользователей
  */
-function valid_email($email, $allowed_list): ? string
+function valid_email($email, $allowed_list): ?string
 {
     if (empty($email)) {
         return 'Это поле должно быть заполнено';
@@ -119,7 +119,7 @@ function valid_email($email, $allowed_list): ? string
  * @param int $max максимальное значение
  */
 
-function valid_lenght($value, $min, $max): ? string
+function valid_lenght($value, $min, $max): ?string
 {
     if (empty($value)) {
         return 'Это поле должно быть заполнено';
@@ -137,7 +137,7 @@ function valid_lenght($value, $min, $max): ? string
  * @param string $email введенная строка
  */
 
-function valid_auth_email($email): ? string
+function valid_auth_email($email): ?string
 {
     if (empty($email)) {
         return 'Это поле должно быть заполнено';
@@ -280,7 +280,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  *
  * @return string значение введеное в форму
  */
-function get_search_parameter(): ? string
+function get_search_parameter(): ?string
 {
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
