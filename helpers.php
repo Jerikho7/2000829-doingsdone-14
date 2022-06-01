@@ -153,7 +153,7 @@ function valid_auth_email($email): ?string
  *
  * @param string $name данные заполненной формы
  */
-function get_post_val($name): string
+function get_post_val($name): ?string
 {
     return filter_input(INPUT_POST, $name);
 }
@@ -326,7 +326,7 @@ function change_status($connect, $user_id): void
  * @param int $user_id id пользователя
  * @param string $search полученное значение
  */
-function search($connect, $user_id, $search): array
+function search($connect, $user_id, $search): array|bool
 {
     $sql = <<<'EOT'
     SELECT t.id, status, t.name, file, deadline_at, p.id
@@ -357,7 +357,7 @@ function search($connect, $user_id, $search): array
  * @param string $filter полученное значение
  * @param int $user_id id пользователя
  */
-function filter($connect, $filter, $user_id): array
+function filter($connect, $filter, $user_id): array|bool
 {
     switch ($filter) {
         case 'today':
@@ -413,7 +413,7 @@ function db_connect($db)
  *
  * @param $connect mysqli Ресурс соединения
  */
-function users_db($connect): array
+function users_db($connect): array|bool
 {
     $sql = 'SELECT id, email, name FROM users';
     $result = mysqli_query($connect, $sql);
@@ -429,7 +429,7 @@ function users_db($connect): array
  * @param $connect mysqli Ресурс соединения
  * @param int $user id пользователя
  */
-function projects_db($connect, $user): array
+function projects_db($connect, $user): array|bool
 {
     $sql = <<<'EOT'
     SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p
@@ -460,7 +460,7 @@ function projects_db($connect, $user): array
  * @param int $user_id id пользователя
  * @param int $project_id id проекта
  */
-function tasks_db($connect, $project_id, $user_id): array
+function tasks_db($connect, $project_id, $user_id): array|bool
 {
     if ($project_id) {
         $sql_tasks = <<<'EOT'
@@ -500,7 +500,7 @@ function tasks_db($connect, $project_id, $user_id): array
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
  */
-function get_deadline_tasks($connect, $user_id): array
+function get_deadline_tasks($connect, $user_id): array|bool
 {
     $sql = 'SELECT name FROM tasks WHERE status = 0 AND deadline_at = CURDATE() AND user_id = ?';
     $stmt = mysqli_prepare($connect, $sql);
@@ -559,7 +559,7 @@ function report_error_404($error_404): void
  *
  * @param int $date дата
  */
-function task_deadline($date): array
+function task_deadline($date): array|bool
 {
     if ($date === null) {
         return false;
