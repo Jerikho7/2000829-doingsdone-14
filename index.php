@@ -19,7 +19,7 @@ $project_id = filter_input(INPUT_GET, 'project_id', FILTER_SANITIZE_SPECIAL_CHAR
 $show_complete_tasks = filter_input(INPUT_GET, 'show_completed', FILTER_SANITIZE_SPECIAL_CHARS);
 change_status($connect, $user_id);
 
-$search = get_search_parameter($connect);
+$search = get_search_parameter();
 $massage = '';
 $filter = filter_input(INPUT_GET, 'filter', FILTER_SANITIZE_SPECIAL_CHARS);
 

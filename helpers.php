@@ -181,9 +181,9 @@ function get_post_val($name)
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param string $value Данные для вставки на место плейсхолдеров
  *
- * @return null
+ * @return void
  */
-function execute_or_error($connect, $sql, $value)
+function execute_or_error($connect, $sql, $value) : void
 {
     $stmt = db_get_prepare_stmt($connect, $sql, $value);
     if ($stmt === false) {
@@ -192,7 +192,6 @@ function execute_or_error($connect, $sql, $value)
     if (!mysqli_stmt_execute($stmt)) {
         report_error(mysqli_error($connect));
     }
-    return null;
 }
 
 /**
@@ -302,7 +301,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  * @return string $search значение введеное в форму
  */
 
-function get_search_parameter($connect)
+function get_search_parameter()
 {
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
@@ -317,9 +316,9 @@ function get_search_parameter($connect)
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
  *
- * @return null
+ * @return void
  */
-function change_status($connect, $user_id)
+function change_status($connect, $user_id) : void
 {
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_SANITIZE_SPECIAL_CHARS);
     $checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -341,7 +340,6 @@ function change_status($connect, $user_id)
     if (!mysqli_stmt_execute($stmt)) {
         report_error(mysqli_error($connect));
     }
-    return null;
 }
 
 /**
