@@ -29,10 +29,8 @@ function is_date_valid($date)
  * Отсутствие пустой формы и даты не позднее текущей
  *
  * @param string $date Дата в виде строки
- *
- * @return null при корректной введенной дате, иначе вывод ошибки
  */
-function valid_date($date) : ? string
+function valid_date($date): ? string
 {
     if (is_null($date)) {
         return null;
@@ -51,10 +49,8 @@ function valid_date($date) : ? string
  *
  * @param int $id id проекта
  * @param array $allowed_list массив со списком проектов пользователя
- *
- * @return null при корректной введенном проекте, иначе вывод ошибки
  */
-function valid_projects($id, $allowed_list) : ? string
+function valid_projects($id, $allowed_list): ? string
 {
     if (empty($id)) {
         return 'Это поле должно быть заполнено';
@@ -70,10 +66,8 @@ function valid_projects($id, $allowed_list) : ? string
  *
  * @param string $name введенное имя
  * @param array $allowed_list массив с именами проектов пользователя
- *
- * @return null при корректной введенном имени, иначе вывод ошибки
  */
-function valid_project_name($name, $allowed_list) : ? string
+function valid_project_name($name, $allowed_list): ? string
 {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
@@ -88,10 +82,8 @@ function valid_project_name($name, $allowed_list) : ? string
  * Проверка заполненности формы
  *
  * @param string $name введенное имя
- *
- * @return null при корректно заполненной форме, иначе вывод ошибки
  */
-function required($name) : ? string
+function required($name): ? string
 {
     if (empty($name)) {
         return 'Это поле должно быть заполнено';
@@ -104,10 +96,8 @@ function required($name) : ? string
  *
  * @param string $email введенный email
  * @param array $allowed_list массив с email пользователей
- *
- * @return null при корректной введенном email, иначе вывод ошибки
  */
-function valid_email($email, $allowed_list) : ? string
+function valid_email($email, $allowed_list): ? string
 {
     if (empty($email)) {
         return 'Это поле должно быть заполнено';
@@ -127,11 +117,9 @@ function valid_email($email, $allowed_list) : ? string
  * @param string $value введенная строка
  * @param int $min минимальное значение
  * @param int $max максимальное значение
- *
- * @return null при корректной введенной длины строки, иначе вывод ошибки
  */
 
-function valid_lenght($value, $min, $max) : ? string
+function valid_lenght($value, $min, $max): ? string
 {
     if (empty($value)) {
         return 'Это поле должно быть заполнено';
@@ -147,11 +135,9 @@ function valid_lenght($value, $min, $max) : ? string
  * Проверка email на входе
  *
  * @param string $email введенная строка
- *
- * @return null при корректной введенном email, иначе вывод ошибки
  */
 
-function valid_auth_email($email) : ? string
+function valid_auth_email($email): ? string
 {
     if (empty($email)) {
         return 'Это поле должно быть заполнено';
@@ -166,10 +152,8 @@ function valid_auth_email($email) : ? string
  * Сохранние значения полей формы после валидации
  *
  * @param string $name данные заполненной формы
- *
- * @return string значение формы
  */
-function get_post_val($name) : string
+function get_post_val($name): string
 {
     return filter_input(INPUT_POST, $name);
 }
@@ -180,10 +164,8 @@ function get_post_val($name) : string
  * @param $connect mysqli Ресурс соединения
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param string $value Данные для вставки на место плейсхолдеров
- *
- * @return void
  */
-function execute_or_error($connect, $sql, $value) : void
+function execute_or_error($connect, $sql, $value): void
 {
     $stmt = db_get_prepare_stmt($connect, $sql, $value);
     if ($stmt === false) {
@@ -298,7 +280,7 @@ function get_noun_plural_form(int $number, string $one, string $two, string $man
  *
  * @return string значение введеное в форму
  */
-function get_search_parameter() : ? string
+function get_search_parameter(): ? string
 {
     $search = filter_input(INPUT_GET, 'search', FILTER_SANITIZE_SPECIAL_CHARS);
     if ($search === null) {
@@ -312,10 +294,8 @@ function get_search_parameter() : ? string
  *
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
- *
- * @return void
  */
-function change_status($connect, $user_id) : void
+function change_status($connect, $user_id): void
 {
     $task_id = filter_input(INPUT_GET, 'task_id', FILTER_SANITIZE_SPECIAL_CHARS);
     $checked = filter_input(INPUT_GET, 'check', FILTER_SANITIZE_SPECIAL_CHARS);
@@ -345,10 +325,8 @@ function change_status($connect, $user_id) : void
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
  * @param string $search полученное значение
- *
- * @return array результат поиска в виде массива
  */
-function search($connect, $user_id, $search) : array
+function search($connect, $user_id, $search): array
 {
     $sql = <<<'EOT'
     SELECT t.id, status, t.name, file, deadline_at, p.id
@@ -378,10 +356,8 @@ function search($connect, $user_id, $search) : array
  * @param $connect mysqli Ресурс соединения
  * @param string $filter полученное значение
  * @param int $user_id id пользователя
- *
- * @return array результат поиска в виде массива
  */
-function filter($connect, $filter, $user_id) : array
+function filter($connect, $filter, $user_id): array
 {
     switch ($filter) {
         case 'today':
@@ -436,10 +412,8 @@ function db_connect($db)
  * Получение списка пользователей
  *
  * @param $connect mysqli Ресурс соединения
- *
- * @return array массив списка пользователей
  */
-function users_db($connect) : array
+function users_db($connect): array
 {
     $sql = 'SELECT id, email, name FROM users';
     $result = mysqli_query($connect, $sql);
@@ -454,10 +428,8 @@ function users_db($connect) : array
  *
  * @param $connect mysqli Ресурс соединения
  * @param int $user id пользователя
- *
- * @return array массив списка проектов
  */
-function projects_db($connect, $user) : array
+function projects_db($connect, $user): array
 {
     $sql = <<<'EOT'
     SELECT p.id, p.name, COUNT(project_id) task_count FROM projects p
@@ -487,10 +459,8 @@ function projects_db($connect, $user) : array
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
  * @param int $project_id id проекта
- *
- * @return array массив списка проектов
  */
-function tasks_db($connect, $project_id, $user_id) : array
+function tasks_db($connect, $project_id, $user_id): array
 {
     if ($project_id) {
         $sql_tasks = <<<'EOT'
@@ -529,10 +499,8 @@ function tasks_db($connect, $project_id, $user_id) : array
  *
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
- *
- * @return array массив списка проектов
  */
-function get_deadline_tasks($connect, $user_id) : array
+function get_deadline_tasks($connect, $user_id): array
 {
     $sql = 'SELECT name FROM tasks WHERE status = 0 AND deadline_at = CURDATE() AND user_id = ?';
     $stmt = mysqli_prepare($connect, $sql);
@@ -556,10 +524,8 @@ function get_deadline_tasks($connect, $user_id) : array
  * Подключние ошибки
  *
  * @param string $error
- *
- * @return void
  */
-function report_error($error) : void
+function report_error($error): void
 {
     $page_content = include_template('error.php', ['error' => $error]);
 
@@ -575,10 +541,8 @@ function report_error($error) : void
  * Подключние ошибки 404
  *
  * @param string $error
- *
- * @return void
  */
-function report_error_404($error_404) : void
+function report_error_404($error_404): void
 {
     $page_content = include_template('error_404.php', ['error_404' => $error_404]);
 
@@ -594,10 +558,8 @@ function report_error_404($error_404) : void
  * Опрделение является ли дата меньше 24 часов
  *
  * @param int $date дата
- *
- * @return array массив списка проектов
  */
-function task_deadline($date) : array
+function task_deadline($date): array
 {
     if ($date === null) {
         return false;
