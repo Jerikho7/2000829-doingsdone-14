@@ -181,7 +181,7 @@ function get_post_val($name)
  * @param $sql string SQL запрос с плейсхолдерами вместо значений
  * @param string $value Данные для вставки на место плейсхолдеров
  *
- * @return mysqli_stmt подготовленное выражение, иначе вывод ошибки
+ * @return null
  */
 function execute_or_error($connect, $sql, $value)
 {
@@ -192,6 +192,7 @@ function execute_or_error($connect, $sql, $value)
     if (!mysqli_stmt_execute($stmt)) {
         report_error(mysqli_error($connect));
     }
+    return null;
 }
 
 /**
@@ -307,7 +308,7 @@ function get_search_parameter($connect)
     if ($search === null) {
         return null;
     }
-    return $search = trim($search);
+    return trim($search);
 }
 
 /**
@@ -316,6 +317,7 @@ function get_search_parameter($connect)
  * @param $connect mysqli Ресурс соединения
  * @param int $user_id id пользователя
  *
+ * @return null
  */
 function change_status($connect, $user_id)
 {
@@ -339,6 +341,7 @@ function change_status($connect, $user_id)
     if (!mysqli_stmt_execute($stmt)) {
         report_error(mysqli_error($connect));
     }
+    return null;
 }
 
 /**
@@ -559,7 +562,7 @@ function get_deadline_tasks($connect, $user_id)
  *
  * @param string $error
  *
- * @return сообщение об ошибке
+ * @return string сообщение об ошибке
  */
 function report_error($error)
 {
@@ -578,7 +581,7 @@ function report_error($error)
  *
  * @param string $error
  *
- * @return сообщение об ошибке
+ * @return string сообщение об ошибке
  */
 function report_error_404($error_404)
 {
